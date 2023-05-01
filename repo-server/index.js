@@ -14,12 +14,14 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/posts", posts);
+app.use("/test", posts);
 
 app.use((err, _req, res, next) => {
+  console.log(err)
   res.status(500).send("Uh oh! An unexpected error occured.")
 })
 
 app.listen(PORT, () => {
   console.log(`Server is running on port: ${PORT}`);
 });
+
