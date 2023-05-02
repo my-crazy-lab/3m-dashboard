@@ -1,6 +1,8 @@
-import React from "react";
-import Bar from "../../atoms/react-chartjs/Bar";
+import React, { useEffect, useState } from "react";
+import BarChart from "../../atoms/react-chartjs/Bar";
 import { faker } from "@faker-js/faker";
+import axios from "axios";
+import Button from "../../atoms/antd/Button";
 
 const Overview = () => {
   const labels = [
@@ -13,9 +15,60 @@ const Overview = () => {
     "July",
   ];
 
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [data, setData] = useState<any>([]);
+
+  function fetchTransaction() {
+    setIsLoading(true);
+
+    return axios
+      .get("http://localhost:6600/3m/api/transaction/get-by-type", {
+        params: {
+          type: "EXPENDITURE",
+        },
+      })
+      .then((result) => {
+        setIsLoading(false);
+        console.log(result);
+        setData(result.data);
+      })
+      .catch((error: any) => {
+        setIsLoading(false);
+
+        console.log(error);
+      });
+  }
+
+  useEffect(() => {
+    fetchTransaction();
+  }, []);
+
+  function onReleaseMemoryCluster() {
+    setIsLoading(true);
+
+    return axios
+      .delete(
+        "http://localhost:6600/3m/api/transaction/release-memory-free-cluster"
+      )
+      .then((result) => {
+        setIsLoading(false);
+
+        console.log(result);
+      })
+      .catch((error: any) => {
+        setIsLoading(false);
+
+        console.log(error);
+      });
+  }
+
   return (
     <div style={{ width: "800px" }}>
-      <Bar
+      {isLoading ? "Loading ...." : <>Done !!!</>}
+      <Button onClick={onReleaseMemoryCluster}>
+        Release memory for Free mongodb cluster
+      </Button>
+      <BarChart
         options={{
           indexAxis: "y",
         }}
