@@ -22,7 +22,7 @@ const Overview = () => {
     setIsLoading(true);
 
     return axios
-      .get("http://localhost:6600/3m/api/transaction/get-by-type", {
+      .get("http://172.16.12.76:6600/3m/api/transaction/get-by-type", {
         params: {
           type: "EXPENDITURE",
         },
@@ -39,6 +39,17 @@ const Overview = () => {
       });
   }
 
+  function resetUser() {
+    return axios
+      .post("http://172.16.12.76:6600/3m/api/user/reset")
+      .then((msg) => {
+        console.log(msg);
+      })
+      .catch((error) => {
+        console.log(error);
+      });
+  }
+
   useEffect(() => {
     fetchTransaction();
   }, []);
@@ -48,7 +59,7 @@ const Overview = () => {
 
     return axios
       .delete(
-        "http://localhost:6600/3m/api/transaction/release-memory-free-cluster"
+        "http://172.16.12.76:6600/3m/api/transaction/release-memory-free-cluster"
       )
       .then((result) => {
         setIsLoading(false);
@@ -68,6 +79,7 @@ const Overview = () => {
       <Button onClick={onReleaseMemoryCluster}>
         Release memory for Free mongodb cluster
       </Button>
+      <Button onClick={resetUser}>Reset user</Button>
       <BarChart
         options={{
           indexAxis: "y",

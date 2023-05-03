@@ -36,8 +36,43 @@ routerTransaction.get("/get-by-type", async (req, res) => {
 
     res.status(200).send({ data });
   } catch (error) {
+    console.log(error);
+
     res.status(500).send({ error })
   }
 });
 
-module.exports = { routerTransaction };
+routerTransaction.post("/create", async (req, res) => {
+  try {
+    console.log(req.body)
+    const { type, label, userCode } = req.body;
+
+    if (!type) {
+      res.status(404).send({ message: "Missing key type" });
+    }
+    if (!label.value) {
+      res.status(404).send({ message: "Missing key label.value" });
+    }
+    if (!label.type) {
+      res.status(404).send({ message: "Missing key label.type" });
+    }
+    if (!userCode) {
+      res.status(404).send({ message: "Missing key userCode" });
+    }
+
+    const db = await connectingLocal;
+
+    const user = await db.collection("users").findOne({ userCode }, { _id: 1 })
+
+    await db.collection("transactions").insertOne(
+      { type, label, createdAt: new Date(), userId: user._id });
+
+    res.status(200).json({ message: "Create new transaction successful" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ error })
+  }
+});
+
+module.exports = routerTransaction;
