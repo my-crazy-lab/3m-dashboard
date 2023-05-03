@@ -4,7 +4,11 @@ import {
   Text,
   Pressable,
   View,
+  Alert,
+  ToastAndroid,
 } from "react-native";
+import { Formik } from "formik";
+import { Input, Select, SelectItem } from "@ui-kitten/components";
 
 export interface ModalProps {
   isVisible: boolean;
@@ -12,29 +16,65 @@ export interface ModalProps {
 }
 
 const Modal = ({ isVisible, onClose }: ModalProps) => {
-  const onCreateTransaction = () => {
-    return fetch("http://172.16.12.76:6600/3m/api/transaction/create", {
-      method: "POST",
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
+  const onCreateTransaction = (values: {
+    type: string;
+    label: { value: string; type: string };
+    userCode: string;
+  }) => {
+    const valuesFormatted = {
+      type: "EXPENDITURE",
+      label: {
+        value: Number(values.label.value),
+        type: labelsType[Number(values.label.type) - 1]?.value,
       },
-      body: JSON.stringify({
-        type: "EXPENDITURE",
-        label: {
-          value: 9999,
-          type: "EAT",
-        },
-      }),
-    })
-      .then((response) => response.json())
-      .then((msg) => {
-        console.log(msg);
-      })
-      .catch((error: string) => {
-        console.log(error);
-      });
+      userCode: Number(values.userCode),
+    };
+    console.log(valuesFormatted);
+
+    Alert.alert("Confirmation", "Are you sure ?", [
+      {
+        text: "Yes",
+        onPress: () =>
+          fetch("http://172.16.12.76:6600/3m/api/transaction/create", {
+            method: "POST",
+            headers: {
+              Accept: "application/json",
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(valuesFormatted),
+          })
+            .then((response) => response.json())
+            .then((msg) => {
+              console.log(msg);
+              
+              onClose();
+              ToastAndroid.show("Successful !", ToastAndroid.SHORT);
+            })
+            .catch((error: string) => {
+              ToastAndroid.show("Error !", ToastAndroid.SHORT);
+              console.log(error);
+            }),
+      },
+      {
+        text: "Cancel",
+        style: "cancel",
+      },
+    ]);
   };
+  const labelsType = [
+    {
+      label: "Eat",
+      value: "EAT",
+    },
+    {
+      label: "Play sport",
+      value: "PLAY_SPORT",
+    },
+    {
+      label: "Accommodation fee",
+      value: "ACCOMMODATION_FEE",
+    },
+  ];
 
   return (
     <DefaultModal
@@ -45,19 +85,57 @@ const Modal = ({ isVisible, onClose }: ModalProps) => {
     >
       <View style={styles.centeredView}>
         <View style={styles.modalView}>
-          <Text style={styles.modalText}>Add transaction</Text>
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={onClose}
+          <View style={styles.header}>
+            <Text style={styles.modalText}>Add transaction</Text>
+          </View>
+          <Formik
+            initialValues={{
+              userCode: "3",
+              type: "",
+              label: {
+                value: "",
+                type: "",
+              },
+            }}
+            onSubmit={(values) => onCreateTransaction(values)}
           >
-            <Text style={styles.textStyle}>Hide Modal</Text>
-          </Pressable>
-          <Pressable
-            style={[styles.button, styles.buttonClose]}
-            onPress={onCreateTransaction}
-          >
-            <Text style={styles.textStyle}>add transaction</Text>
-          </Pressable>
+            {({ handleChange, handleSubmit, values }) => (
+              <View>
+                <Input
+                  style={styles.input}
+                  placeholder="Price"
+                  keyboardType="numeric"
+                  onChangeText={handleChange("label.value")}
+                  value={values.label.value}
+                />
+                <Select
+                  value={labelsType[Number(values.label.type) - 1]?.label}
+                  onSelect={(index) => {
+                    handleChange("label.type")(index.toString());
+                  }}
+                >
+                  {labelsType.map((item, index) => (
+                    <SelectItem key={index} title={item.label} />
+                  ))}
+                </Select>
+
+                <View style={styles.footer}>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={() => handleSubmit()}
+                  >
+                    <Text style={styles.textStyle}>Save</Text>
+                  </Pressable>
+                  <Pressable
+                    style={[styles.button, styles.buttonClose]}
+                    onPress={onClose}
+                  >
+                    <Text style={styles.textStyle}>Cancel</Text>
+                  </Pressable>
+                </View>
+              </View>
+            )}
+          </Formik>
         </View>
       </View>
     </DefaultModal>
@@ -73,11 +151,10 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
   modalView: {
-    margin: 20,
+    width: "80%",
     backgroundColor: "white",
-    borderRadius: 20,
-    padding: 35,
-    alignItems: "center",
+    borderRadius: 12,
+    padding: 24,
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
@@ -88,20 +165,34 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   button: {
-    borderRadius: 20,
+    borderRadius: 8,
     padding: 10,
     elevation: 2,
+    marginLeft: 4,
+    marginRight: 4,
   },
   buttonClose: {
     backgroundColor: "#2196F3",
   },
+  header: { alignItems: "flex-start" },
   textStyle: {
     color: "white",
     fontWeight: "bold",
     textAlign: "center",
   },
   modalText: {
-    marginBottom: 15,
+    marginBottom: 24,
+    fontWeight: "bold",
     textAlign: "center",
+  },
+  footer: {
+    flexDirection: "row",
+    justifyContent: "flex-end",
+  },
+  input: {
+    height: 40,
+    margin: 12,
+    borderWidth: 1,
+    padding: 10,
   },
 });

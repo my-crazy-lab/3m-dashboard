@@ -15,7 +15,7 @@ routerUser.post("/reset", async (req, res) => {
       [
         { nickname: "Minhem", userCode: 1, createdAt: new Date() },
         { nickname: "Miti", userCode: 2, createdAt: new Date() },
-        { nickname: "Tui", userCode: 0, createdAt: new Date() }
+        { nickname: "Tui", userCode: 3, createdAt: new Date() }
       ]);
 
     res.status(200).send({ message: "Reset user Minhem, Miti, Tui successful" })
