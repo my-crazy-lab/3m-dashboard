@@ -24,6 +24,7 @@ const Modal = ({ isVisible, onClose }: ModalProps) => {
     const valuesFormatted = {
       type: "EXPENDITURE",
       label: {
+        ...values.label,
         value: Number(values.label.value),
         type: labelsType[Number(values.label.type) - 1]?.value,
       },
@@ -46,7 +47,7 @@ const Modal = ({ isVisible, onClose }: ModalProps) => {
             .then((response) => response.json())
             .then((msg) => {
               console.log(msg);
-              
+
               onClose();
               ToastAndroid.show("Successful !", ToastAndroid.SHORT);
             })
@@ -95,6 +96,8 @@ const Modal = ({ isVisible, onClose }: ModalProps) => {
               label: {
                 value: "",
                 type: "",
+                description: "",
+                date: new Date(),
               },
             }}
             onSubmit={(values) => onCreateTransaction(values)}
@@ -102,13 +105,22 @@ const Modal = ({ isVisible, onClose }: ModalProps) => {
             {({ handleChange, handleSubmit, values }) => (
               <View>
                 <Input
-                  style={styles.input}
+                  style={styles.item}
                   placeholder="Price"
                   keyboardType="numeric"
                   onChangeText={handleChange("label.value")}
                   value={values.label.value}
                 />
+                <Input
+                  style={styles.item}
+                  multiline={true}
+                  placeholder="Description"
+                  onChangeText={handleChange("label.description")}
+                  value={values.label.description}
+                />
                 <Select
+                  placeholder="Choose"
+                  style={styles.item}
                   value={labelsType[Number(values.label.type) - 1]?.label}
                   onSelect={(index) => {
                     handleChange("label.type")(index.toString());
@@ -168,8 +180,8 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     padding: 10,
     elevation: 2,
-    marginLeft: 4,
-    marginRight: 4,
+    marginLeft: 8,
+    marginRight: 8,
   },
   buttonClose: {
     backgroundColor: "#2196F3",
@@ -188,11 +200,10 @@ const styles = StyleSheet.create({
   footer: {
     flexDirection: "row",
     justifyContent: "flex-end",
+    marginTop: 24,
   },
-  input: {
-    height: 40,
-    margin: 12,
-    borderWidth: 1,
-    padding: 10,
+  item: {
+    marginTop: 8,
+    marginBottom: 8,
   },
 });
