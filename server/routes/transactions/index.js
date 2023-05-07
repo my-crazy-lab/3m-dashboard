@@ -18,15 +18,15 @@ routerTransaction.delete("/release-memory-free-cluster", async (req, res) => {
 
 routerTransaction.get("/get-by-type", async (req, res) => {
   try {
-    const transactionType = req.query.type;
+    const { type, pagination, filter } = req.query
 
-    if (!transactionType) {
+    if (!type) {
       res.status(404).send({ message: "Miss type transaction" });
     }
 
     const db = await connectingLocal;
     const transactionCollection = db.collection("transactions").find(
-      { type: transactionType },
+      { type },
       {
         createdAt: 1,
         label: { value: 1, type: 1 }
