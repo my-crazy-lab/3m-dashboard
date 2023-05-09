@@ -22,7 +22,7 @@ const Overview = () => {
     setIsLoading(true);
 
     return axios
-      .get(`${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-by-type`, {
+      .get(`${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-by-filter-and-pagination`, {
         params: {
           type: "EXPENDITURE",
         },
