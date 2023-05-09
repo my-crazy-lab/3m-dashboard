@@ -3,10 +3,10 @@ const MongoClient = require("mongodb").MongoClient;
 const urlFreeMongoCluster = process.env.CLUSTER_URL;
 const urlMongoLocal = process.env.LOCAL_URL;
 
-if(!urlMongoLocal) {
+if (!urlMongoLocal) {
   throw new Error("❌ LOCAL_URL not found. Please update .env")
 }
-if(!urlFreeMongoCluster) {
+if (!urlFreeMongoCluster) {
   throw new Error("❌ CLUSTER_URL not found. Please update .env")
 }
 
@@ -14,7 +14,7 @@ const connectingFreeCluster = MongoClient.connect(urlFreeMongoCluster, { useNewU
   console.log("✅ Connected mongodb cluster")
 
   return client.db('3m')
-}).catch(err => {
+}).catch((err) => {
   throw new Error(err)
 })
 
@@ -22,7 +22,7 @@ const connectingLocal = MongoClient.connect(urlMongoLocal, { useNewUrlParser: tr
   console.log("✅ Connected mongodb local (27017)")
 
   return client.db('3m')
-}).catch(err => {
+}).catch((err) => {
   throw new Error(err)
 })
 

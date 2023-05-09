@@ -23,7 +23,7 @@ app.use((err, _req, res, next) => {
   res.status(500).send("Uh oh! An unexpected error occur.")
 })
 
-app.listen(PORT, "172.16.12.76", () => {
+app.listen(PORT, process.env.IP_V4 || '192.168.1.22', () => {
   console.log(`Server is running on port: ${PORT}`);
 });
 

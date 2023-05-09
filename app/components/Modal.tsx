@@ -36,7 +36,7 @@ const Modal = ({ isVisible, onClose }: ModalProps) => {
       {
         text: "Yes",
         onPress: () =>
-          fetch("http://172.16.12.76:6600/3m/api/transaction/create", {
+          fetch(`${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/create`, {
             method: "POST",
             headers: {
               Accept: "application/json",

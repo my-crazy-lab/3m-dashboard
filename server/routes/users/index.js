@@ -1,4 +1,4 @@
-const { connectingLocal, connectingFreeCluster } = require("../../db/connectDatabase.js");
+const { connectingLocal } = require("../../db/connectDatabase.js");
 
 const express = require("express");
 
