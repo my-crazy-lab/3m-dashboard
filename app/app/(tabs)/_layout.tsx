@@ -5,6 +5,7 @@ import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 
 import Colors from "../../constants/Colors";
+import { ScreenProps } from "expo-router/build/views/Screen";
 
 /**
  * You can explore the built-in icon families and icons on the web at https://icons.expo.fyi/
@@ -51,7 +52,7 @@ export default function TabLayout() {
           name="two"
           options={{
             title: "Tab Two",
-            tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
+            tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
           }}
         />
         <Tabs.Screen

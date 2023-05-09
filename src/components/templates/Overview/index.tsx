@@ -22,15 +22,16 @@ const Overview = () => {
     setIsLoading(true);
 
     return axios
-      .get("http://172.16.12.76:6600/3m/api/transaction/get-by-type", {
+      .get(`${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-by-type`, {
         params: {
           type: "EXPENDITURE",
         },
       })
       .then((result) => {
         setIsLoading(false);
-        console.log(result);
         setData(result.data);
+
+        console.log(result);
       })
       .catch((error: any) => {
         setIsLoading(false);
@@ -41,7 +42,7 @@ const Overview = () => {
 
   function resetUser() {
     return axios
-      .post("http://172.16.12.76:6600/3m/api/user/reset")
+      .post(`${process.env.REACT_APP_DOMAIN_API}/3m/api/user/reset`)
       .then((msg) => {
         console.log(msg);
       })
@@ -59,7 +60,7 @@ const Overview = () => {
 
     return axios
       .delete(
-        "http://172.16.12.76:6600/3m/api/transaction/release-memory-free-cluster"
+        `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/release-memory-free-cluster`
       )
       .then((result) => {
         setIsLoading(false);
