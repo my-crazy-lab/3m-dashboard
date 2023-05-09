@@ -1,6 +1,5 @@
 import Space from 'antd/lib/space';
 import SelectBase from '../SelectBase';
-import { Moment } from 'moment';
 import React, { useState } from 'react';
 import DatePickerFormatted from '../DatePickerFormatted';
 import RangePickerFormatted from '../RangePickerFormatted';
@@ -9,7 +8,7 @@ import { IDatePickerFormatted } from '../types';
 export interface DateTimePickerOptionalProps {
   defaultSelected?: IDatePickerFormatted;
   onChange?: (args: {
-    date?: Moment;
+    date?: any;
     rangeDate: [Date, Date] | null;
     picker: IDatePickerFormatted;
   }) => void;

@@ -1,12 +1,11 @@
 import RangePickerBase, { RangePickerBaseProps } from "../RangePickerBase";
-import { Moment } from "moment";
 import React from "react";
 import { IRangeDate } from "../types";
 
 export interface RangePickerFormattedProps
   extends Omit<RangePickerBaseProps, "onChange"> {
   onChange?: (args: {
-    date?: Moment;
+    date?: any;
     picker: IRangeDate;
     rangeDate: [Date, Date] | null;
   }) => void;
