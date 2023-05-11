@@ -2,10 +2,6 @@ import { TablePaginationConfig } from "antd";
 import { useState, useEffect } from "react";
 import useLoading from "../useLoading";
 
-interface IFilter {
-  [key: string]: string;
-}
-
 const useGetTransactionByPaginationAndFilter = () => {
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
@@ -15,59 +11,46 @@ const useGetTransactionByPaginationAndFilter = () => {
 
   const [total, setTotal] = useState<TablePaginationConfig["total"]>(0);
 
-  const [filter, setFilter] = useState<IFilter & { rangeDate: [Date, Date] }>({
-    rangeDate: [new Date(), new Date()],
-  });
-
   const { isLoading, onFetchData } = useLoading({
-    callbackQuery: (result: any) => {
+    callbackQuery: ({ data: result }: any) => {
       setData(result.data);
       setTotal(result.total);
     },
+    method: "get",
+    api: `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-by-filter-and-pagination`,
   });
 
   useEffect(() => {
     onFetchData({
-      pagination: {
-        pageNumber: pagination.current,
-        pageSize: pagination.pageSize,
+      params: {
+        pagination: {
+          pageNumber: pagination.current,
+          pageSize: pagination.pageSize,
+        },
       },
-      filter,
     });
   }, []);
 
   const onPagination = (newPagination: any) => {
+    console.log(newPagination);
     setPagination(() => newPagination);
 
     onFetchData({
-      pagination: {
-        pageNumber: newPagination.current,
-        pageSize: newPagination.pageSize,
+      params: {
+        pagination: {
+          pageNumber: newPagination.current,
+          pageSize: newPagination.pageSize,
+        },
       },
-      filter,
-    });
-  };
-
-  const onFilter = (updateFilter: IFilter) => {
-    setFilter((currentFilter) => ({ ...currentFilter, ...updateFilter }));
-    setPagination(() => ({ current: 1, pageSize: 10 }));
-
-    onFetchData({
-      pagination: {
-        pageNumber: pagination.current,
-        pageSize: pagination.pageSize,
-      },
-      filter: { ...filter, ...updateFilter },
     });
   };
 
   return {
     data,
     isLoading,
-    onFilter,
     pagination,
-    onPagination,
     total,
+    onPagination,
   };
 };
 

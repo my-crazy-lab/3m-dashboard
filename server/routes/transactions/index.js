@@ -16,32 +16,64 @@ routerTransaction.delete("/release-memory-free-cluster", async (req, res) => {
   }
 })
 
+function getParamsPagination(
+  pagination,
+) {
+  const { pageNumber, pageSize } = pagination;
+
+  return {
+    skip: pageNumber > 0 ? pageSize * (pageNumber - 1) : 0,
+    limit: pageSize,
+  };
+}
+
 routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
   try {
-    const { type, pagination, filter } = req.query
+    const { pagination } = req.query
 
-    if (!type) {
-      res.status(404).send({ message: "Miss type transaction" });
+    if (!pagination.pageNumber || !pagination.pageSize) {
+      res.status(404).send({ message: "Missing pageNumber or pageSize" })
     }
 
+    const { skip, limit } = getParamsPagination(pagination)
+
     const db = await connectingLocal;
-    const transactionCollection = db.collection("transactions").find(
-      { type },
-      {
-        createdAt: 1,
-        updatedAt: 1,
-        type: 1,
-        label: {
-          value: 1,
-          type: 1,
-          date: 1,
-          description: 1
-        }
-      });
+    const transactionCollection = db.collection("transactions").aggregate(
+      [
+        {
+          $project: {
+            createdAt: 1,
+            updatedAt: 1,
+            type: 1,
+            label: {
+              value: 1,
+              type: 1,
+              date: 1,
+              description: 1
+            }
+          }
+        },
+        {
+          $facet: {
+            count: [{ $count: 'total' }],
+            data: [
+              {
+                $sort: {
+                  'label.date': -1
+                }
+              },
+              { $skip: Number(skip) },
+              { $limit: Number(limit) }
+            ],
+          }
+        }]);
 
     const data = await transactionCollection.toArray();
 
-    res.status(200).send({ data });
+    res.status(200).send({
+      data: data[0]?.data || [],
+      total: data[0]?.count?.[0]?.total || 0
+    });
   } catch (error) {
     console.log(error);
 

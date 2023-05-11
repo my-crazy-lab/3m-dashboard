@@ -1,8 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import BarChart from "../../atoms/react-chartjs/Bar";
 import { faker } from "@faker-js/faker";
 import axios from "axios";
 import Button from "../../atoms/antd/Button";
+import TableTransaction from "./TableTransaction";
 
 const Overview = () => {
   const labels = [
@@ -16,29 +17,6 @@ const Overview = () => {
   ];
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [data, setData] = useState<any>([]);
-
-  function fetchTransaction() {
-    setIsLoading(true);
-
-    return axios
-      .get(`${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-by-filter-and-pagination`, {
-        params: {
-          type: "EXPENDITURE",
-        },
-      })
-      .then((result) => {
-        setIsLoading(false);
-        setData(result.data);
-
-        console.log(result);
-      })
-      .catch((error: any) => {
-        setIsLoading(false);
-
-        console.log(error);
-      });
-  }
 
   function resetUser() {
     return axios
@@ -50,10 +28,6 @@ const Overview = () => {
         console.log(error);
       });
   }
-
-  useEffect(() => {
-    fetchTransaction();
-  }, []);
 
   function onReleaseMemoryCluster() {
     setIsLoading(true);
@@ -115,6 +89,7 @@ const Overview = () => {
           ],
         }}
       />
+      <TableTransaction />
     </div>
   );
 };
