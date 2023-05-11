@@ -29,13 +29,23 @@ function getParamsPagination(
 
 routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
   try {
-    const { pagination } = req.query
+    const { pagination, filter = {} } = req.query
 
     if (!pagination.pageNumber || !pagination.pageSize) {
       res.status(404).send({ message: "Missing pageNumber or pageSize" })
     }
 
     const { skip, limit } = getParamsPagination(pagination)
+
+    const $filter = { $match: {} }
+    if (filter.type) {
+      $filter.$match.type = filter.type
+    }
+    if (filter["label.type"]?.length) {
+      $filter.$match["label.type"] = {
+        $in: filter["label.type"]
+      }
+    }
 
     const db = await connectingLocal;
     const transactionCollection = db.collection("transactions").aggregate(
@@ -53,6 +63,7 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
             }
           }
         },
+        $filter,
         {
           $facet: {
             count: [{ $count: 'total' }],

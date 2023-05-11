@@ -1,21 +1,12 @@
 import React, { useState } from "react";
-import BarChart from "../../atoms/react-chartjs/Bar";
-import { faker } from "@faker-js/faker";
 import axios from "axios";
 import Button from "../../atoms/antd/Button";
 import TableTransaction from "./TableTransaction";
+import { Skeleton } from "antd";
+import SpaceWrap from "../../atoms/antd/SpaceWrap";
+import GroupChart from "./GroupChart";
 
 const Overview = () => {
-  const labels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-  ];
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   function resetUser() {
@@ -49,46 +40,15 @@ const Overview = () => {
   }
 
   return (
-    <div style={{ width: "800px" }}>
-      {isLoading ? "Loading ...." : <>Done !!!</>}
-      <Button onClick={onReleaseMemoryCluster}>
-        Release memory for Free mongodb cluster
-      </Button>
-      <Button onClick={resetUser}>Reset user</Button>
-      <BarChart
-        options={{
-          indexAxis: "y",
-        }}
-        data={{
-          labels,
-          datasets: [
-            {
-              label: "Dataset 1",
-              data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-              ),
-              backgroundColor: "rgb(255, 99, 132)",
-              stack: "Stack 0",
-            },
-            {
-              label: "Dataset 2",
-              data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-              ),
-              backgroundColor: "rgb(75, 192, 192)",
-              stack: "Stack 1",
-            },
-            {
-              label: "Dataset 3",
-              data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-              ),
-              backgroundColor: "rgb(53, 162, 235)",
-              stack: "Stack 2",
-            },
-          ],
-        }}
-      />
+    <div style={{ width: 1200 }}>
+      {isLoading ? <Skeleton /> : null}
+      <SpaceWrap>
+        <Button onClick={onReleaseMemoryCluster}>
+          Release memory for Free mongodb cluster
+        </Button>
+        <Button onClick={resetUser}>Reset user</Button>
+      </SpaceWrap>
+      <GroupChart />
       <TableTransaction />
     </div>
   );
