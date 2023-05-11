@@ -1,5 +1,14 @@
-import { Typography, Tag, Select, Input } from "antd";
-import React from "react";
+import {
+  Typography,
+  Tag,
+  Select,
+  Input,
+  Slider,
+  Col,
+  InputNumber,
+  Row,
+} from "antd";
+import React, { useState } from "react";
 import TableBase, { TColumnsBase } from "../../atoms/antd/Table";
 import useGetTransactionByPaginationAndFilter from "../../../hooks/useGetTransactionByPaginationAndFilter";
 import { formatCurrency, formatDate } from "../../../utils";
@@ -92,6 +101,15 @@ const TableTransaction = () => {
               ),
             },
           ]}
+        />
+        <InputNumber
+          placeholder="Max value want to search"
+          style={{ width: 200 }}
+          formatter={(value) =>
+            `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+          }
+          parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
+          onChange={(e) => onFilter({ maxValue: e })}
         />
       </SpaceWrap>
       <TableBase

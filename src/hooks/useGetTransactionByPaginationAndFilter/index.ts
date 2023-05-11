@@ -11,8 +11,11 @@ const useGetTransactionByPaginationAndFilter = () => {
   });
 
   const [total, setTotal] = useState<TablePaginationConfig["total"]>(0);
-  const [filter, setFilter] = useState<{ [key: string]: string | Array<any> }>({
+  const [filter, setFilter] = useState<{
+    [key: string]: string | Array<any> | number;
+  }>({
     "label.type": [TRANSACTION_TYPE_EXPENDITURE.EAT],
+    maxValue: 5000000,
   });
 
   const { isLoading, onFetchData } = useLoading({

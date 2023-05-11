@@ -30,7 +30,7 @@ function getParamsPagination(
 routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
   try {
     const { pagination, filter = {} } = req.query
-
+console.log(filter)
     if (!pagination.pageNumber || !pagination.pageSize) {
       res.status(404).send({ message: "Missing pageNumber or pageSize" })
     }
@@ -44,6 +44,12 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
     if (filter["label.type"]?.length) {
       $filter.$match["label.type"] = {
         $in: filter["label.type"]
+      }
+    }
+
+    if (filter.maxValue) {
+      $filter.$match["label.value"] = {
+        $lte: Number(filter.maxValue)
       }
     }
 
