@@ -1,14 +1,5 @@
-import {
-  Typography,
-  Tag,
-  Select,
-  Input,
-  Slider,
-  Col,
-  InputNumber,
-  Row,
-} from "antd";
-import React, { useState } from "react";
+import { Typography, Tag, Select, Input, InputNumber, DatePicker } from "antd";
+import React from "react";
 import TableBase, { TColumnsBase } from "../../atoms/antd/Table";
 import useGetTransactionByPaginationAndFilter from "../../../hooks/useGetTransactionByPaginationAndFilter";
 import { formatCurrency, formatDate } from "../../../utils";
@@ -19,6 +10,7 @@ import {
   TransactionTypeRevenue,
 } from "../../../constants";
 import SpaceWrap from "../../atoms/antd/SpaceWrap";
+import dayjs from "dayjs";
 
 const TableTransaction = () => {
   const columns: TColumnsBase<any> = [
@@ -101,6 +93,16 @@ const TableTransaction = () => {
               ),
             },
           ]}
+        />
+        <DatePicker.RangePicker
+          defaultValue={[dayjs().startOf("date"), dayjs().endOf("date")]}
+          onChange={(e) => {
+            if (e && Array.isArray(e))
+              onFilter({
+                rangeDate: e.map((item) => item.toDate()),
+              });
+            else onFilter({ rangeDate: undefined });
+          }}
         />
         <InputNumber
           placeholder="Max value want to search"
