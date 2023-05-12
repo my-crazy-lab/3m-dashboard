@@ -1,1 +1,0 @@
-### This folder store components, follow by 5 distinct layer in Atomic design: Atoms, Molecules, Organisms, Templates, Pages.
