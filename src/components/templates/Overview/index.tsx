@@ -1,44 +1,13 @@
-import React, { useEffect, useState } from "react";
-import BarChart from "../../atoms/react-chartjs/Bar";
-import { faker } from "@faker-js/faker";
+import React, { useState } from "react";
 import axios from "axios";
 import Button from "../../atoms/antd/Button";
+import TableTransaction from "./TableTransaction";
+import { Skeleton } from "antd";
+import SpaceWrap from "../../atoms/antd/SpaceWrap";
+import GroupChart from "./GroupChart";
 
 const Overview = () => {
-  const labels = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-  ];
-
   const [isLoading, setIsLoading] = useState<boolean>(false);
-  const [data, setData] = useState<any>([]);
-
-  function fetchTransaction() {
-    setIsLoading(true);
-
-    return axios
-      .get(`${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-by-type`, {
-        params: {
-          type: "EXPENDITURE",
-        },
-      })
-      .then((result) => {
-        setIsLoading(false);
-        setData(result.data);
-
-        console.log(result);
-      })
-      .catch((error: any) => {
-        setIsLoading(false);
-
-        console.log(error);
-      });
-  }
 
   function resetUser() {
     return axios
@@ -50,10 +19,6 @@ const Overview = () => {
         console.log(error);
       });
   }
-
-  useEffect(() => {
-    fetchTransaction();
-  }, []);
 
   function onReleaseMemoryCluster() {
     setIsLoading(true);
@@ -75,46 +40,16 @@ const Overview = () => {
   }
 
   return (
-    <div style={{ width: "800px" }}>
-      {isLoading ? "Loading ...." : <>Done !!!</>}
-      <Button onClick={onReleaseMemoryCluster}>
-        Release memory for Free mongodb cluster
-      </Button>
-      <Button onClick={resetUser}>Reset user</Button>
-      <BarChart
-        options={{
-          indexAxis: "y",
-        }}
-        data={{
-          labels,
-          datasets: [
-            {
-              label: "Dataset 1",
-              data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-              ),
-              backgroundColor: "rgb(255, 99, 132)",
-              stack: "Stack 0",
-            },
-            {
-              label: "Dataset 2",
-              data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-              ),
-              backgroundColor: "rgb(75, 192, 192)",
-              stack: "Stack 1",
-            },
-            {
-              label: "Dataset 3",
-              data: labels.map(() =>
-                faker.datatype.number({ min: 0, max: 1000 })
-              ),
-              backgroundColor: "rgb(53, 162, 235)",
-              stack: "Stack 2",
-            },
-          ],
-        }}
-      />
+    <div style={{ width: 1200 }}>
+      {isLoading ? <Skeleton /> : null}
+      <SpaceWrap>
+        <Button onClick={onReleaseMemoryCluster}>
+          Release memory for Free mongodb cluster
+        </Button>
+        <Button onClick={resetUser}>Reset user</Button>
+      </SpaceWrap>
+      <GroupChart />
+      <TableTransaction />
     </div>
   );
 };
