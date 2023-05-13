@@ -4,7 +4,6 @@ import {
   Form,
   Input,
   InputNumber,
-  Radio,
   Row,
   Select,
   Tabs,
@@ -16,9 +15,10 @@ import {
   TransactionTypeRevenue,
 } from "../../constants";
 
-const TransactionForm = ({ form }: any) => {
+const TransactionForm = ({ form, onFinish }: any) => {
   return (
     <Form
+      onFinish={onFinish}
       layout="vertical"
       form={form}
       initialValues={{

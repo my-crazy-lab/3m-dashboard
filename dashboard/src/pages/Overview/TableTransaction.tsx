@@ -72,7 +72,7 @@ const TableTransaction = () => {
   const { isLoading: isCreatingTransaction, onFetchData } =
     useCreateTransaction({ callbackDone: onClose });
 
-  const [form] = Form.useForm();
+  const [form] = Form.useForm<any>();
 
   return (
     <>
@@ -89,7 +89,11 @@ const TableTransaction = () => {
               title="Create transaction"
               footer={
                 <Space>
-                  <Button type="primary" onClick={onFetchData}>
+                  <Button
+                    type="primary"
+                    htmlType="submit"
+                    onClick={form.submit}
+                  >
                     {isCreatingTransaction ? <Spin /> : "Save"}
                   </Button>
                   <Button onClick={onClose}>Cancel</Button>
@@ -99,7 +103,16 @@ const TableTransaction = () => {
               {isCreatingTransaction ? (
                 <Skeleton />
               ) : (
-                <TransactionForm form={form} />
+                <TransactionForm
+                  form={form}
+                  onFinish={(e: any) => {
+                    onFetchData({
+                      ...e,
+                      label: { ...e.label, date: e.label?.date?.toDate() },
+                      userCode: 3,
+                    });
+                  }}
+                />
               )}
             </Drawer>
           }

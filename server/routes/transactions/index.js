@@ -28,9 +28,9 @@ function getParamsPagination(
 }
 
 routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
-  console.log("transactions/get-by-filter-and-pagination DEBUGGER ->>> ", req.query)
-
   try {
+    console.log("transactions/get-by-filter-and-pagination DEBUGGER ->>> ", req.query)
+
     const { pagination, filter = {} } = req.query
     console.log(filter)
     if (!pagination.pageNumber || !pagination.pageSize) {
@@ -108,10 +108,9 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
 });
 
 routerTransaction.post("/create", async (req, res) => {
-  console.log("transactions/create DEBUGGER ->>> ", req.query)
-
   try {
-    console.log(req.body)
+    console.log("transactions/create DEBUGGER ->>> ", req.body)
+
     const { type, label, userCode } = req.body;
 
     if (!type) {
@@ -136,7 +135,7 @@ routerTransaction.post("/create", async (req, res) => {
     }
 
     await db.collection("transactions").insertOne(
-      { type, label, createdAt: new Date(), userId: user._id });
+      { type, label: { ...label, date: new Date(label?.date) }, createdAt: new Date(), userId: user._id });
 
     res.status(200).json({ message: "Create new transaction successful" });
   } catch (error) {
