@@ -6,6 +6,7 @@ const useLoading = ({ callbackQuery, method, api }: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
   async function onFetchData(...params: any) {
+    console.log("in axios", method, api, params);
     setIsLoading(true);
 
     await axios[method](api, ...params)

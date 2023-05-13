@@ -6,6 +6,13 @@ import {
   InputNumber,
   DatePicker,
   Table,
+  Button,
+  Col,
+  Drawer,
+  Space,
+  Spin,
+  Skeleton,
+  Form,
 } from "antd";
 import useGetTransactionByPaginationAndFilter from "../../hooks/useGetTransactionByPaginationAndFilter";
 import { formatCurrency, formatDate } from "../../utils";
@@ -15,9 +22,14 @@ import {
   TransactionTypeExpenditureData,
   TransactionTypeRevenue,
 } from "../../constants";
+
 import SpaceWrap from "./SpaceWrap";
+import TransactionForm from "./TransactionForm";
+
 import moment from "moment";
 import type { ColumnsType } from "antd/es/table";
+import useDialog from "../../hooks/useDialog";
+import useCreateTransaction from "../../hooks/useCreateTransaction";
 
 const TableTransaction = () => {
   const columns: ColumnsType<any> = [
@@ -56,8 +68,43 @@ const TableTransaction = () => {
   const { isLoading, data, pagination, onPagination, total, onFilter } =
     useGetTransactionByPaginationAndFilter();
 
+  const { open, onClose, onOpen } = useDialog();
+  const { isLoading: isCreatingTransaction, onFetchData } =
+    useCreateTransaction({ callbackDone: onClose });
+
+  const [form] = Form.useForm();
+
   return (
     <>
+      <Col>
+        <SpaceWrap>
+          <Button onClick={onOpen}>Add transaction</Button>
+          {
+            //@ts-ignore
+            <Drawer
+              width="50vw"
+              visible={open}
+              onClose={onClose}
+              destroyOnClose
+              title="Create transaction"
+              footer={
+                <Space>
+                  <Button type="primary" onClick={onFetchData}>
+                    {isCreatingTransaction ? <Spin /> : "Save"}
+                  </Button>
+                  <Button onClick={onClose}>Cancel</Button>
+                </Space>
+              }
+            >
+              {isCreatingTransaction ? (
+                <Skeleton />
+              ) : (
+                <TransactionForm form={form} />
+              )}
+            </Drawer>
+          }
+        </SpaceWrap>
+      </Col>
       <SpaceWrap>
         <Input.Search
           style={{ width: 280 }}
@@ -66,7 +113,6 @@ const TableTransaction = () => {
         />
         <Select
           onChange={(e) => {
-            console.log(e, "!!!");
             //@ts-ignore
             if (e.includes(IN_OUT.EXPENDITURE)) {
               onFilter({ type: IN_OUT.EXPENDITURE, "label.type": undefined });

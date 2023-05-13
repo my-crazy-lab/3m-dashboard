@@ -28,6 +28,8 @@ function getParamsPagination(
 }
 
 routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
+  console.log("transactions/get-by-filter-and-pagination DEBUGGER ->>> ", req.query)
+
   try {
     const { pagination, filter = {} } = req.query
     console.log(filter)
@@ -55,8 +57,8 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
 
     if (filter.rangeDate) {
       $filter.$match["label.date"] = {
-        $gte: filter.rangeDate[0],
-        $lte: filter.rangeDate[1]
+        $gte: new Date(filter.rangeDate[0]),
+        $lte: new Date(filter.rangeDate[1])
       }
     }
 
@@ -106,6 +108,8 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
 });
 
 routerTransaction.post("/create", async (req, res) => {
+  console.log("transactions/create DEBUGGER ->>> ", req.query)
+
   try {
     console.log(req.body)
     const { type, label, userCode } = req.body;

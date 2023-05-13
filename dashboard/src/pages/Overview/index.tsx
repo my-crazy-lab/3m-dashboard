@@ -38,6 +38,9 @@ import Paragraph from "antd/lib/typography/Paragraph";
 import Echart from "../../components/chart/EChart";
 import LineChart from "../../components/chart/LineChart";
 
+import ButtonReleaseMemory from "./ButtonReleaseMemory";
+import ButtonResetUser from "./ButtonResetUser";
+
 import ava1 from "../../assets/images/logo-shopify.svg";
 import ava2 from "../../assets/images/logo-atlassian.svg";
 import ava3 from "../../assets/images/logo-slack.svg";
@@ -346,48 +349,20 @@ function Overview() {
 
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  function resetUser() {
-    return axios
-      .post(`${process.env.REACT_APP_DOMAIN_API}/3m/api/user/reset`)
-      .then((msg) => {
-        console.log(msg);
-      })
-      .catch((error) => {
-        console.log(error);
-      });
-  }
-
-  function onReleaseMemoryCluster() {
-    setIsLoading(true);
-
-    return axios
-      .delete(
-        `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/release-memory-free-cluster`
-      )
-      .then((result) => {
-        setIsLoading(false);
-
-        console.log(result);
-      })
-      .catch((error: any) => {
-        setIsLoading(false);
-
-        console.log(error);
-      });
-  }
-
   return (
     <>
-      <div style={{ width: 1200 }}>
-        {isLoading ? <Skeleton /> : null}
-        <SpaceWrap>
-          <Button onClick={onReleaseMemoryCluster}>
-            Release memory for Free mongodb cluster
-          </Button>
-          <Button onClick={resetUser}>Reset user</Button>
-        </SpaceWrap>
-        <TableTransaction />
-      </div>
+      <Row>
+        <Col span={24}>
+          {isLoading ? <Skeleton /> : null}
+          <SpaceWrap>
+            <ButtonReleaseMemory setIsLoading={setIsLoading} />
+            <ButtonResetUser />
+          </SpaceWrap>
+        </Col>
+        <Col span={24}>
+          <TableTransaction />
+        </Col>
+      </Row>
       <div className="layout-content">
         <Row className="rowgap-vbox" gutter={[24, 0]}>
           {count.map((c, index) => (
