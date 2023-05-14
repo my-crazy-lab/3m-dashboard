@@ -37,6 +37,8 @@ import Paragraph from "antd/lib/typography/Paragraph";
 
 import Echart from "../../components/chart/EChart";
 import LineChart from "../../components/chart/LineChart";
+import DonutChart from "../../components/chart/DonutChart";
+import BarChart from "../../components/chart/BarChart";
 
 import ButtonReleaseMemory from "./ButtonReleaseMemory";
 import ButtonResetUser from "./ButtonResetUser";
@@ -407,6 +409,16 @@ function Overview() {
           <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <LineChart />
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
+            <Card bordered={false} className="criclebox h-full">
+              <DonutChart />
+            </Card>
+          </Col>
+          <Col xs={24} sm={24} md={12} lg={12} xl={14} className="mb-24">
+            <Card bordered={false} className="criclebox h-full">
+              <BarChart />
             </Card>
           </Col>
         </Row>
