@@ -29,7 +29,7 @@ function getParamsPagination(
 
 routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
   try {
-    console.log("transactions/get-by-filter-and-pagination DEBUGGER ->>> ", req.query)
+    console.log("🔥 transactions/get-by-filter-and-pagination DEBUGGER ->>> ", req.query)
 
     const { pagination, filter = {} } = req.query
     console.log(filter)
@@ -60,6 +60,10 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
         $gte: new Date(filter.rangeDate[0]),
         $lte: new Date(filter.rangeDate[1])
       }
+    }
+
+    if (filter["search.description"]) {
+      $filter.$match["label.description"] = { $regex: filter["search.description"] }
     }
 
     const db = await connectingLocal;
@@ -109,7 +113,7 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
 
 routerTransaction.post("/create", async (req, res) => {
   try {
-    console.log("transactions/create DEBUGGER ->>> ", req.body)
+    console.log("🔥 transactions/create DEBUGGER ->>> ", req.body)
 
     const { type, label, userCode } = req.body;
 
@@ -135,7 +139,7 @@ routerTransaction.post("/create", async (req, res) => {
     }
 
     await db.collection("transactions").insertOne(
-      { type, label: { ...label, date: new Date(label?.date) }, createdAt: new Date(), userId: user._id });
+      { isProduction: process.env.IS_PRODUCTION, type, label: { ...label, date: new Date(label?.date) }, createdAt: new Date(), userId: user._id });
 
     res.status(200).json({ message: "Create new transaction successful" });
   } catch (error) {

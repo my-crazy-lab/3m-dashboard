@@ -22,8 +22,13 @@ const TransactionForm = ({ form, onFinish }: any) => {
       layout="vertical"
       form={form}
       initialValues={{
-        type: "",
-        label: { value: 0, type: "", date: "", description: "" },
+        type: IN_OUT.EXPENDITURE,
+        label: {
+          value: 0,
+          type: "",
+          date: "",
+          description: "",
+        },
       }}
     >
       <Row gutter={16}>
@@ -35,7 +40,7 @@ const TransactionForm = ({ form, onFinish }: any) => {
               { required: true, message: "Please select transaction's type" },
             ]}
           >
-            <Tabs defaultActiveKey={IN_OUT.EXPENDITURE}>
+            <Tabs>
               {InOutDate.map((item) => (
                 <Tabs.TabPane tab={item} key={item}>
                   {item === IN_OUT.EXPENDITURE ? (

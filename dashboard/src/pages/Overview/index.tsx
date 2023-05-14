@@ -40,6 +40,7 @@ import LineChart from "../../components/chart/LineChart";
 
 import ButtonReleaseMemory from "./ButtonReleaseMemory";
 import ButtonResetUser from "./ButtonResetUser";
+import ExplainTransactionType from "./ExplainTransactionType";
 
 import ava1 from "../../assets/images/logo-shopify.svg";
 import ava2 from "../../assets/images/logo-atlassian.svg";
@@ -352,12 +353,15 @@ function Overview() {
   return (
     <>
       <Row>
-        <Col span={24}>
+        <Col span={8}>
           {isLoading ? <Skeleton /> : null}
           <SpaceWrap>
             <ButtonReleaseMemory setIsLoading={setIsLoading} />
             <ButtonResetUser />
           </SpaceWrap>
+        </Col>
+        <Col span={16}>
+          <ExplainTransactionType />
         </Col>
         <Col span={24}>
           <TableTransaction />

@@ -10,6 +10,7 @@
   * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
 */
 
+//@ts-nocheck
 import { useState, useEffect } from "react";
 
 import {
@@ -25,6 +26,7 @@ import {
   Drawer,
   Typography,
   Switch,
+  Checkbox,
 } from "antd";
 
 import {
@@ -257,7 +259,7 @@ function Header({
   handleSidenavColor,
   handleSidenavType,
   handleFixedNavbar,
-}) {
+}: any) {
   const { Title, Text } = Typography;
 
   const [visible, setVisible] = useState(false);
@@ -430,6 +432,7 @@ function Header({
             placeholder="Type here..."
             prefix={<SearchOutlined />}
           />
+          <Checkbox>Trigger production data</Checkbox>
         </Col>
       </Row>
     </>

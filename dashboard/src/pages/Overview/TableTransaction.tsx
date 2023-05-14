@@ -13,6 +13,9 @@ import {
   Spin,
   Skeleton,
   Form,
+  Card,
+  Radio,
+  Tooltip,
 } from "antd";
 import useGetTransactionByPaginationAndFilter from "../../hooks/useGetTransactionByPaginationAndFilter";
 import { formatCurrency, formatDate } from "../../utils";
@@ -30,6 +33,7 @@ import moment from "moment";
 import type { ColumnsType } from "antd/es/table";
 import useDialog from "../../hooks/useDialog";
 import useCreateTransaction from "../../hooks/useCreateTransaction";
+import { InfoCircleOutlined } from "@ant-design/icons";
 
 const TableTransaction = () => {
   const columns: ColumnsType<any> = [
@@ -63,6 +67,18 @@ const TableTransaction = () => {
         <Typography.Text>{formatCurrency(args[1].label.value)}</Typography.Text>
       ),
     },
+    {
+      key: "label.description",
+      dataIndex: "label.description",
+      title: "Description",
+      render: (...args) => (
+        <Typography.Text>
+          {args[1].label?.description
+            ? formatCurrency(args[1].label.description)
+            : ""}
+        </Typography.Text>
+      ),
+    },
   ];
 
   const { isLoading, data, pagination, onPagination, total, onFilter } =
@@ -74,6 +90,11 @@ const TableTransaction = () => {
 
   const [form] = Form.useForm<any>();
 
+  const onCloseDrawer = () => {
+    onClose();
+    form.resetFields();
+  };
+
   return (
     <>
       <Col>
@@ -84,7 +105,7 @@ const TableTransaction = () => {
             <Drawer
               width="50vw"
               visible={open}
-              onClose={onClose}
+              onClose={onCloseDrawer}
               destroyOnClose
               title="Create transaction"
               footer={
@@ -96,7 +117,7 @@ const TableTransaction = () => {
                   >
                     {isCreatingTransaction ? <Spin /> : "Save"}
                   </Button>
-                  <Button onClick={onClose}>Cancel</Button>
+                  <Button onClick={onCloseDrawer}>Cancel</Button>
                 </Space>
               }
             >
@@ -121,17 +142,25 @@ const TableTransaction = () => {
       <SpaceWrap>
         <Input.Search
           style={{ width: 280 }}
-          placeholder="Search text"
+          placeholder="Search by description"
           enterButton
+          onSearch={(searchValue) =>
+            onFilter({ "search.description": searchValue })
+          }
         />
         <Select
-          onChange={(e) => {
-            //@ts-ignore
-            if (e.includes(IN_OUT.EXPENDITURE)) {
+          onChange={(e: any) => {
+            if (e.includes(IN_OUT.EXPENDITURE) && e.includes(IN_OUT.REVENUE)) {
+              onFilter({ type: {}, "label.type": undefined });
+            } else if (
+              e.includes(IN_OUT.EXPENDITURE) &&
+              !e.includes(IN_OUT.REVENUE)
+            ) {
               onFilter({ type: IN_OUT.EXPENDITURE, "label.type": undefined });
-            }
-            //@ts-ignore
-            else if (e.includes(IN_OUT.REVENUE)) {
+            } else if (
+              !e.includes(IN_OUT.EXPENDITURE) &&
+              e.includes(IN_OUT.REVENUE)
+            ) {
               onFilter({ type: IN_OUT.REVENUE, "label.type": undefined });
             } else onFilter({ "label.type": e, type: undefined });
           }}
@@ -180,27 +209,50 @@ const TableTransaction = () => {
           onChange={(e) => onFilter({ maxValue: e })}
         />
       </SpaceWrap>
-      <Table
-        {...{
-          pagination: {
-            ...pagination,
-            total,
-            showTotal: (total: any) => (
-              <Tag
-                style={{ fontSize: 16 }}
-                color="green"
-              >{`Total items: ${total}`}</Tag>
-            ),
-          },
-          size: "large",
-          loading: isLoading,
-          columns,
-          dataSource: data,
-          onChange: onPagination,
-          scroll: { x: 800 },
-          rowKey: "_id",
-        }}
-      />
+      <Card
+        bordered={false}
+        className="criclebox tablespace mb-24"
+        title="Transactions Table"
+        extra={
+          <>
+            <Tooltip title="Will be upgrade soon" placement="top">
+              <InfoCircleOutlined style={{ margin: "0 8px", fontSize: 18 }} />
+            </Tooltip>
+            <Radio.Group defaultValue={IN_OUT.EXPENDITURE}>
+              <Radio.Button value={IN_OUT.EXPENDITURE}>
+                {IN_OUT.EXPENDITURE}
+              </Radio.Button>
+              <Radio.Button value={IN_OUT.REVENUE}>
+                {IN_OUT.REVENUE}
+              </Radio.Button>
+            </Radio.Group>
+          </>
+        }
+      >
+        <div className="table-responsive">
+          <Table
+            {...{
+              pagination: {
+                ...pagination,
+                total,
+                showTotal: (total: any) => (
+                  <Tag
+                    style={{ fontSize: 16 }}
+                    color="green"
+                  >{`Total items: ${total}`}</Tag>
+                ),
+              },
+              size: "large",
+              loading: isLoading,
+              columns,
+              dataSource: data,
+              onChange: onPagination,
+              scroll: { x: 800 },
+              rowKey: "_id",
+            }}
+          />
+        </div>
+      </Card>
     </>
   );
 };
