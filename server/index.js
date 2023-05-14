@@ -20,6 +20,7 @@ app.use("/3m/api/user", routerUser);
 
 app.use((err, _req, res, next) => {
   console.log(err)
+
   res.status(500).send("Uh oh! An unexpected error occur.")
 })
 

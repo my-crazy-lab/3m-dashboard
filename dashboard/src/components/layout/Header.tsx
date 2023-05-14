@@ -259,6 +259,7 @@ function Header({
   handleSidenavColor,
   handleSidenavType,
   handleFixedNavbar,
+  triggerProduction,
 }: any) {
   const { Title, Text } = Typography;
 
@@ -432,7 +433,9 @@ function Header({
             placeholder="Type here..."
             prefix={<SearchOutlined />}
           />
-          <Checkbox>Trigger production data</Checkbox>
+          <Checkbox onChange={(e) => triggerProduction(e.target.checked)}>
+            Trigger production data
+          </Checkbox>
         </Col>
       </Row>
     </>

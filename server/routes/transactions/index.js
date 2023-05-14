@@ -1,5 +1,5 @@
 const { connectingLocal, connectingFreeCluster } = require("../../db/connectDatabase.js");
-
+const { ObjectId } = require("mongodb")
 const express = require("express");
 
 const routerTransaction = express.Router();
@@ -33,13 +33,16 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
 
     const { pagination, filter = {} } = req.query
     console.log(filter)
+
     if (!pagination.pageNumber || !pagination.pageSize) {
       res.status(404).send({ message: "Missing pageNumber or pageSize" })
     }
 
     const { skip, limit } = getParamsPagination(pagination)
 
-    const $filter = { $match: {} }
+    const formattedIsProduction = filter.isProduction === "false" ? false : filter.isProduction === "true" ? true : !!filter.isProduction
+    const $filter = { $match: formattedIsProduction ? { isProduction: formattedIsProduction } : {} }
+
     if (filter.type) {
       $filter.$match.type = filter.type
     }
@@ -74,6 +77,7 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
             createdAt: 1,
             updatedAt: 1,
             type: 1,
+            isProduction: 1,
             label: {
               value: 1,
               type: 1,
@@ -111,11 +115,11 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
   }
 });
 
-routerTransaction.post("/create", async (req, res) => {
+routerTransaction.post("/create", async function (req, res) {
   try {
     console.log("🔥 transactions/create DEBUGGER ->>> ", req.body)
 
-    const { type, label, userCode } = req.body;
+    const { type, label, userCode, isProduction } = req.body;
 
     if (!type) {
       res.status(404).send({ message: "Missing key type" });
@@ -138,8 +142,10 @@ routerTransaction.post("/create", async (req, res) => {
       res.status(404).send({ message: "User not found" });
     }
 
+    const formattedIsProduction = isProduction === "false" ? false : isProduction === "true" ? true : !!isProduction
+
     await db.collection("transactions").insertOne(
-      { isProduction: process.env.IS_PRODUCTION, type, label: { ...label, date: new Date(label?.date) }, createdAt: new Date(), userId: user._id });
+      { isProduction: formattedIsProduction, type, label: { ...label, date: new Date(label?.date) }, createdAt: new Date(), userId: user._id });
 
     res.status(200).json({ message: "Create new transaction successful" });
   } catch (error) {
@@ -152,6 +158,7 @@ routerTransaction.post("/create", async (req, res) => {
 routerTransaction.post("/update", async (req, res) => {
   try {
     console.log(req.body)
+
     const { type, label, userCode, idTransaction } = req.body;
 
     if (!idTransaction) {
@@ -186,6 +193,28 @@ routerTransaction.post("/update", async (req, res) => {
       { type, label, updatedAt: new Date() });
 
     res.status(200).json({ message: "Create new transaction successful" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ error })
+  }
+});
+
+routerTransaction.post("/remove", async (req, res) => {
+  try {
+    console.log(req.body)
+
+    const { idTransaction } = req.body;
+
+    if (!idTransaction) {
+      res.status(404).send({ message: "Missing key idTransaction" });
+    }
+
+    const db = await connectingLocal;
+
+    await db.collection("transactions").remove({ _id: ObjectId(idTransaction) });
+
+    res.status(200).json({ message: "Remove successful" });
   } catch (error) {
     console.log(error);
 

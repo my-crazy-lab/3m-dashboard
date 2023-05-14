@@ -16,6 +16,7 @@ import {
   Card,
   Radio,
   Tooltip,
+  Checkbox,
 } from "antd";
 import useGetTransactionByPaginationAndFilter from "../../hooks/useGetTransactionByPaginationAndFilter";
 import { formatCurrency, formatDate } from "../../utils";
@@ -34,8 +35,32 @@ import type { ColumnsType } from "antd/es/table";
 import useDialog from "../../hooks/useDialog";
 import useCreateTransaction from "../../hooks/useCreateTransaction";
 import { InfoCircleOutlined } from "@ant-design/icons";
+import { useContext } from "react";
+import { ProductionContext } from "../../components/layout/Main";
+import useRemoveTransaction from "../../hooks/useRemoveTransaction";
 
 const TableTransaction = () => {
+  const { isLoading: isRemoving, onFetchData: onRemoveTransaction } =
+    useRemoveTransaction();
+
+  const { isProduction } = useContext<any>(ProductionContext);
+
+  const {
+    isLoading,
+    data,
+    pagination,
+    onPagination,
+    total,
+    onFilter,
+    onRefetch,
+  } = useGetTransactionByPaginationAndFilter();
+
+  const { open, onClose, onOpen } = useDialog();
+  const { isLoading: isCreatingTransaction, onFetchData: onCreateTransaction } =
+    useCreateTransaction({ callbackDone: onClose });
+
+  const [form] = Form.useForm<any>();
+
   const columns: ColumnsType<any> = [
     {
       key: "label.date",
@@ -79,16 +104,33 @@ const TableTransaction = () => {
         </Typography.Text>
       ),
     },
+    {
+      key: "isProduction",
+      dataIndex: "isProduction",
+      title: "isProduction",
+      render: (isProduction: boolean) => (
+        <Checkbox disabled checked={isProduction} />
+      ),
+    },
+    {
+      key: "action",
+      dataIndex: "action",
+      title: "Action",
+      render: (...args) => (
+        <>
+          <Button
+            onClick={async () => {
+              await onRemoveTransaction({ idTransaction: args[1]._id });
+
+              onRefetch();
+            }}
+          >
+            {isRemoving ? <Spin /> : "Remove"}
+          </Button>
+        </>
+      ),
+    },
   ];
-
-  const { isLoading, data, pagination, onPagination, total, onFilter } =
-    useGetTransactionByPaginationAndFilter();
-
-  const { open, onClose, onOpen } = useDialog();
-  const { isLoading: isCreatingTransaction, onFetchData } =
-    useCreateTransaction({ callbackDone: onClose });
-
-  const [form] = Form.useForm<any>();
 
   const onCloseDrawer = () => {
     onClose();
@@ -126,12 +168,15 @@ const TableTransaction = () => {
               ) : (
                 <TransactionForm
                   form={form}
-                  onFinish={(e: any) => {
-                    onFetchData({
+                  onFinish={async (e: any) => {
+                    await onCreateTransaction({
                       ...e,
                       label: { ...e.label, date: e.label?.date?.toDate() },
                       userCode: 3,
+                      isProduction,
                     });
+
+                    onRefetch();
                   }}
                 />
               )}
@@ -166,7 +211,7 @@ const TableTransaction = () => {
           }}
           mode="multiple"
           defaultValue={[TRANSACTION_TYPE_EXPENDITURE.EAT]}
-          style={{ width: 280 }}
+          style={{ width: 360 }}
           options={[
             {
               label: IN_OUT.EXPENDITURE,
@@ -194,7 +239,10 @@ const TableTransaction = () => {
           onChange={(e: any) => {
             if (e && Array.isArray(e))
               onFilter({
-                rangeDate: e.map((item) => item.toDate()),
+                rangeDate: [
+                  e[0].startOf("date").toDate(),
+                  e[1].endOf("date").toDate(),
+                ],
               });
             else onFilter({ rangeDate: undefined });
           }}

@@ -1,10 +1,13 @@
 import { TablePaginationConfig } from "antd";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useContext } from "react";
 import useLoading from "../useLoading";
 import { TRANSACTION_TYPE_EXPENDITURE } from "../../constants";
 import dayjs from "dayjs";
+import { ProductionContext } from "../../components/layout/Main";
 
 const useGetTransactionByPaginationAndFilter = () => {
+  const { isProduction } = useContext<any>(ProductionContext);
+
   const [data, setData] = useState([]);
   const [pagination, setPagination] = useState<TablePaginationConfig>({
     current: 1,
@@ -21,6 +24,7 @@ const useGetTransactionByPaginationAndFilter = () => {
       dayjs().startOf("date").toDate(),
       dayjs().endOf("date").toDate(),
     ],
+    isProduction: isProduction,
   });
 
   const { isLoading, onFetchData } = useLoading({
@@ -39,7 +43,7 @@ const useGetTransactionByPaginationAndFilter = () => {
           pageNumber: pagination.current,
           pageSize: pagination.pageSize,
         },
-        filter,
+        filter: { ...filter, isProduction },
       },
     });
   }, []);
@@ -54,13 +58,13 @@ const useGetTransactionByPaginationAndFilter = () => {
           pageNumber: newPagination.current,
           pageSize: newPagination.pageSize,
         },
-        filter,
+        filter: { ...filter, isProduction },
       },
     });
   };
 
   const onFilter = async (newFilter: any) => {
-    setFilter({ ...filter, ...newFilter });
+    setFilter({ ...filter, ...newFilter, isProduction });
 
     await onFetchData({
       params: {
@@ -68,7 +72,19 @@ const useGetTransactionByPaginationAndFilter = () => {
           pageNumber: 1,
           pageSize: 10,
         },
-        filter: { ...filter, ...newFilter },
+        filter: { ...filter, ...newFilter, isProduction },
+      },
+    });
+  };
+
+  const onRefetch = async () => {
+    await onFetchData({
+      params: {
+        pagination: {
+          pageNumber: pagination.current,
+          pageSize: pagination.pageSize,
+        },
+        filter: { ...filter, isProduction },
       },
     });
   };
@@ -81,6 +97,7 @@ const useGetTransactionByPaginationAndFilter = () => {
     filter,
     onFilter,
     onPagination,
+    onRefetch,
   };
 };
 

@@ -88,7 +88,14 @@ const TransactionForm = ({ form, onFinish }: any) => {
               { required: true, message: "Please input transaction's value" },
             ]}
           >
-            <InputNumber />
+            <InputNumber
+              placeholder="Max value want to search"
+              style={{ width: 200 }}
+              formatter={(value) =>
+                `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+              }
+              parser={(value) => value!.replace(/\$\s?|(,*)/g, "")}
+            />
           </Form.Item>
         </Col>
         <Col span={12}>
