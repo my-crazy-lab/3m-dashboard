@@ -293,7 +293,7 @@ const TableTransaction = () => {
               size: "large",
               loading: isLoading,
               columns,
-              dataSource: data,
+              dataSource: data || [],
               onChange: onPagination,
               scroll: { x: 800 },
               rowKey: "_id",
