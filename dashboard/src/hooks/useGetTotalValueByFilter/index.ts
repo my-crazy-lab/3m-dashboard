@@ -1,8 +1,11 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import useLoading from "../useLoading";
 import moment from "moment";
+import { ProductionContext } from "../../components/layout/Main";
 
 const useGetTotalValueByFilter = () => {
+  const { isProduction } = useContext<any>(ProductionContext);
+
   const [data, setData] = useState([]);
   const [filter, setFilter] = useState({
     rangeDate: [
@@ -20,12 +23,14 @@ const useGetTotalValueByFilter = () => {
   });
 
   useEffect(() => {
-    onFetchData({ params: { filter } });
+    onFetchData({ params: { filter: { ...filter, isProduction } } });
   }, []);
 
   const onFilter = (newFilter: any) => {
     setFilter({ ...filter, ...newFilter });
-    onFetchData({ params: { filter: { ...filter, ...newFilter } } });
+    onFetchData({
+      params: { filter: { ...filter, ...newFilter, isProduction } },
+    });
   };
 
   return { data, isLoading, filter, onFilter, onFetchData };
