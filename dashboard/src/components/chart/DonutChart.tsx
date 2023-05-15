@@ -1,16 +1,10 @@
 import Chart from "react-apexcharts";
 
-const DonutChart = ({
-  labels = ["Apple", "Test1", "test2", "test3", "aaaa"],
-  series = [44, 55, 41, 17, 15],
-}: {
-  labels?: string[];
-  series?: number[];
-}) => {
+const DonutChart = ({ data = [] }: { data: Array<any> }) => {
   return (
     <Chart
       options={{
-        labels,
+        labels: data.map((item) => item._id) || [],
         dataLabels: {
           enabled: true,
           enabledOnSeries: undefined,
@@ -51,7 +45,7 @@ const DonutChart = ({
           },
         },
       }}
-      series={series}
+      series={data.map((item) => item.total) || []}
       type="donut"
       width="380"
     />

@@ -1,8 +1,15 @@
 import { useEffect, useState } from "react";
 import useLoading from "../useLoading";
+import moment from "moment";
 
 const useGetTotalValueByFilter = () => {
   const [data, setData] = useState([]);
+  const [filter, setFilter] = useState({
+    rangeDate: [
+      moment().startOf("date").toDate(),
+      moment().endOf("date").toDate(),
+    ],
+  });
 
   const { isLoading, onFetchData } = useLoading({
     callbackQuery: (result: any) => {
@@ -13,9 +20,14 @@ const useGetTotalValueByFilter = () => {
   });
 
   useEffect(() => {
-    onFetchData();
+    onFetchData({ params: { filter } });
   }, []);
 
-  return { data, isLoading };
+  const onFilter = (newFilter: any) => {
+    setFilter({ ...filter, ...newFilter });
+    onFetchData({ params: { filter: { ...filter, ...newFilter } } });
+  };
+
+  return { data, isLoading, filter, onFilter, onFetchData };
 };
 export default useGetTotalValueByFilter;

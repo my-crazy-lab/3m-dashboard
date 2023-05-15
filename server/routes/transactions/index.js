@@ -5,9 +5,7 @@ const express = require("express");
 const routerTransaction = express.Router();
 
 function defineMatchByIsProduction(isProduction) {
-  const formattedIsProduction = isProduction === "false" ? false : isProduction === "true" ? true : !!isProduction
-
-  if (formattedIsProduction) return { $match: { isProduction: formattedIsProduction } }
+  if (isProduction === true || isProduction === "true") return { $match: { isProduction: true } }
   return { $match: {} }
 }
 
@@ -125,14 +123,14 @@ routerTransaction.get('/get-total-value-by-filter', async function (req, res) {
   try {
     console.log("🔥 transactions/get-total-value-by-filter DEBUGGER ->>> ", req.query)
 
-    const { rangeDate, isProduction } = req.query;
+    const { filter = {} } = req.query;
 
-    const $filter = defineMatchByIsProduction(isProduction)
+    const $filter = defineMatchByIsProduction(filter.isProduction)
 
-    if (rangeDate) {
+    if (filter.rangeDate) {
       $filter.$match["label.date"] = {
-        $gte: new Date(rangeDate[0]),
-        $lte: new Date(rangeDate[1])
+        $gte: new Date(filter.rangeDate[0]),
+        $lte: new Date(filter.rangeDate[1])
       }
     }
 

@@ -193,6 +193,7 @@ const TableTransaction = () => {
         <SelectTransactionType callbackChange={onFilter} />
         <RangePickerTransaction callbackChange={onFilter} />
         <InputNumber
+          defaultValue={"5000000".replace(/\$\s?|(,*)/g, "")}
           placeholder="Max value want to search"
           style={{ width: 200 }}
           formatter={(value) =>

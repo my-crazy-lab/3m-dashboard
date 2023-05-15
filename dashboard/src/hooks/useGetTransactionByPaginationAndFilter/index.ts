@@ -2,8 +2,8 @@ import { TablePaginationConfig } from "antd";
 import { useState, useEffect, useContext } from "react";
 import useLoading from "../useLoading";
 import { TRANSACTION_TYPE_EXPENDITURE } from "../../constants";
-import dayjs from "dayjs";
 import { ProductionContext } from "../../components/layout/Main";
+import moment from "moment";
 
 const useGetTransactionByPaginationAndFilter = () => {
   const { isProduction } = useContext<any>(ProductionContext);
@@ -21,8 +21,8 @@ const useGetTransactionByPaginationAndFilter = () => {
     "label.type": [TRANSACTION_TYPE_EXPENDITURE.EAT],
     maxValue: 5000000,
     rangeDate: [
-      dayjs().startOf("date").toDate(),
-      dayjs().endOf("date").toDate(),
+      moment().startOf("date").toDate(),
+      moment().endOf("date").toDate(),
     ],
     isProduction: isProduction,
   });

@@ -370,11 +370,8 @@ function Overview() {
         <Col span={24}>
           <TableTransaction />
         </Col>
-        <Col span={12}>
+        <Col span={24}>
           <CompareTransactionType />
-        </Col>
-        <Col span={12}>
-          <DetailTotalByTransactionType />
         </Col>
       </Row>
       <Divider />
