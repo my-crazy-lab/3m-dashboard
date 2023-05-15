@@ -13,7 +13,7 @@
 */
 import { useState } from "react";
 import TableTransaction from "./TableTransaction";
-import { Skeleton } from "antd";
+import { Divider, Skeleton } from "antd";
 import SpaceWrap from "./SpaceWrap";
 import {
   Card,
@@ -43,6 +43,8 @@ import BarChart from "../../components/chart/BarChart";
 import ButtonReleaseMemory from "./ButtonReleaseMemory";
 import ButtonResetUser from "./ButtonResetUser";
 import ExplainTransactionType from "./ExplainTransactionType";
+import CompareTransactionType from "./CompareTransactionType";
+import DetailTotalByTransactionType from "./DetailTotalByTransactionType";
 
 import ava1 from "../../assets/images/logo-shopify.svg";
 import ava2 from "../../assets/images/logo-atlassian.svg";
@@ -354,7 +356,7 @@ function Overview() {
 
   return (
     <>
-      <Row>
+      <Row gutter={[24, 12]}>
         <Col span={8}>
           {isLoading ? <Skeleton /> : null}
           <SpaceWrap>
@@ -368,7 +370,14 @@ function Overview() {
         <Col span={24}>
           <TableTransaction />
         </Col>
+        <Col span={12}>
+          <CompareTransactionType />
+        </Col>
+        <Col span={12}>
+          <DetailTotalByTransactionType />
+        </Col>
       </Row>
+      <Divider />
       <div className="layout-content">
         <Row className="rowgap-vbox" gutter={[24, 0]}>
           {count.map((c, index) => (

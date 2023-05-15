@@ -20,12 +20,7 @@ import {
 } from "antd";
 import useGetTransactionByPaginationAndFilter from "../../hooks/useGetTransactionByPaginationAndFilter";
 import { formatCurrency, formatDate } from "../../utils";
-import {
-  IN_OUT,
-  TRANSACTION_TYPE_EXPENDITURE,
-  TransactionTypeExpenditureData,
-  TransactionTypeRevenue,
-} from "../../constants";
+import { IN_OUT } from "../../constants";
 
 import SpaceWrap from "./SpaceWrap";
 import TransactionForm from "./TransactionForm";
@@ -38,6 +33,8 @@ import { InfoCircleOutlined } from "@ant-design/icons";
 import { useContext } from "react";
 import { ProductionContext } from "../../components/layout/Main";
 import useRemoveTransaction from "../../hooks/useRemoveTransaction";
+import SelectTransactionType from "./SelectTransactionType";
+import RangePickerTransaction from "./RangePickerTransaction";
 
 const TableTransaction = () => {
   const { isLoading: isRemoving, onFetchData: onRemoveTransaction } =
@@ -193,60 +190,8 @@ const TableTransaction = () => {
             onFilter({ "search.description": searchValue })
           }
         />
-        <Select
-          onChange={(e: any) => {
-            if (e.includes(IN_OUT.EXPENDITURE) && e.includes(IN_OUT.REVENUE)) {
-              onFilter({ type: {}, "label.type": undefined });
-            } else if (
-              e.includes(IN_OUT.EXPENDITURE) &&
-              !e.includes(IN_OUT.REVENUE)
-            ) {
-              onFilter({ type: IN_OUT.EXPENDITURE, "label.type": undefined });
-            } else if (
-              !e.includes(IN_OUT.EXPENDITURE) &&
-              e.includes(IN_OUT.REVENUE)
-            ) {
-              onFilter({ type: IN_OUT.REVENUE, "label.type": undefined });
-            } else onFilter({ "label.type": e, type: undefined });
-          }}
-          mode="multiple"
-          defaultValue={[TRANSACTION_TYPE_EXPENDITURE.EAT]}
-          style={{ width: 360 }}
-          options={[
-            {
-              label: IN_OUT.EXPENDITURE,
-              options: [
-                ...TransactionTypeExpenditureData,
-                IN_OUT.EXPENDITURE,
-              ].map((item) => ({
-                label: item,
-                value: item,
-              })),
-            },
-            {
-              label: IN_OUT.REVENUE,
-              options: [...TransactionTypeRevenue, IN_OUT.REVENUE].map(
-                (item) => ({
-                  label: item,
-                  value: item,
-                })
-              ),
-            },
-          ]}
-        />
-        <DatePicker.RangePicker
-          defaultValue={[moment().startOf("date"), moment().endOf("date")]}
-          onChange={(e: any) => {
-            if (e && Array.isArray(e))
-              onFilter({
-                rangeDate: [
-                  e[0].startOf("date").toDate(),
-                  e[1].endOf("date").toDate(),
-                ],
-              });
-            else onFilter({ rangeDate: undefined });
-          }}
-        />
+        <SelectTransactionType callbackChange={onFilter} />
+        <RangePickerTransaction callbackChange={onFilter} />
         <InputNumber
           placeholder="Max value want to search"
           style={{ width: 200 }}

@@ -4,6 +4,13 @@ const express = require("express");
 
 const routerTransaction = express.Router();
 
+function defineMatchByIsProduction(isProduction) {
+  const formattedIsProduction = isProduction === "false" ? false : isProduction === "true" ? true : !!isProduction
+
+  if (formattedIsProduction) return { $match: { isProduction: formattedIsProduction } }
+  return { $match: {} }
+}
+
 routerTransaction.delete("/release-memory-free-cluster", async (req, res) => {
   try {
     const db = await connectingFreeCluster;
@@ -40,8 +47,7 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
 
     const { skip, limit } = getParamsPagination(pagination)
 
-    const formattedIsProduction = filter.isProduction === "false" ? false : filter.isProduction === "true" ? true : !!filter.isProduction
-    const $filter = { $match: formattedIsProduction ? { isProduction: formattedIsProduction } : {} }
+    const $filter = defineMatchByIsProduction(filter.isProduction)
 
     if (filter.type) {
       $filter.$match.type = filter.type
@@ -115,6 +121,42 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
   }
 });
 
+routerTransaction.get('/get-total-value-by-filter', async function (req, res) {
+  try {
+    console.log("🔥 transactions/get-total-value-by-filter DEBUGGER ->>> ", req.query)
+
+    const { rangeDate, isProduction } = req.query;
+
+    const $filter = defineMatchByIsProduction(isProduction)
+
+    if (rangeDate) {
+      $filter.$match["label.date"] = {
+        $gte: new Date(rangeDate[0]),
+        $lte: new Date(rangeDate[1])
+      }
+    }
+
+    const db = await connectingLocal;
+    const transactionCollection = db.collection("transactions").aggregate(
+      [
+        $filter,
+        {
+          $group:
+          {
+            _id: "$label.type",
+            total: { $sum: "$label.value" },
+          }
+        },
+      ]);
+
+    const data = await transactionCollection.toArray();
+    console.log(data)
+    res.status(200).send({ data });
+  } catch (error) {
+    res.status(500).send({ error })
+  }
+})
+
 routerTransaction.post("/create", async function (req, res) {
   try {
     console.log("🔥 transactions/create DEBUGGER ->>> ", req.body)
@@ -144,8 +186,9 @@ routerTransaction.post("/create", async function (req, res) {
 
     const formattedIsProduction = isProduction === "false" ? false : isProduction === "true" ? true : !!isProduction
 
-    await db.collection("transactions").insertOne(
+    const test = await db.collection("transactions").insertOne(
       { isProduction: formattedIsProduction, type, label: { ...label, date: new Date(label?.date) }, createdAt: new Date(), userId: user._id });
+    console.log(test, "!!!!!")
 
     res.status(200).json({ message: "Create new transaction successful" });
   } catch (error) {

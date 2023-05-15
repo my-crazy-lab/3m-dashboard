@@ -4,8 +4,8 @@ const DonutChart = ({
   labels = ["Apple", "Test1", "test2", "test3", "aaaa"],
   series = [44, 55, 41, 17, 15],
 }: {
-  labels: string[];
-  series: number[];
+  labels?: string[];
+  series?: number[];
 }) => {
   return (
     <Chart
