@@ -44,7 +44,6 @@ import ButtonReleaseMemory from "./ButtonReleaseMemory";
 import ButtonResetUser from "./ButtonResetUser";
 import ExplainTransactionType from "./ExplainTransactionType";
 import CompareTransactionType from "./CompareTransactionType";
-import DetailTotalByTransactionType from "./DetailTotalByTransactionType";
 
 import ava1 from "../../assets/images/logo-shopify.svg";
 import ava2 from "../../assets/images/logo-atlassian.svg";

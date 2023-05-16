@@ -6,7 +6,7 @@ import { ProductionContext } from "../../components/layout/Main";
 const useGetTotalValueByFilter = () => {
   const { isProduction } = useContext<any>(ProductionContext);
 
-  const [data, setData] = useState([]);
+  const [data, setData] = useState({ expenditure: [], revenue: [] });
   const [filter, setFilter] = useState({
     rangeDate: [
       moment().startOf("date").toDate(),
@@ -16,7 +16,7 @@ const useGetTotalValueByFilter = () => {
 
   const { isLoading, onFetchData } = useLoading({
     callbackQuery: (result: any) => {
-      setData(result?.data?.data || []);
+      setData(result?.data || { expenditure: [], revenue: [] });
     },
     method: "get",
     api: `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-total-value-by-filter`,

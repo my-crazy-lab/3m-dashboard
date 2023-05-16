@@ -1,4 +1,5 @@
 import Chart from "react-apexcharts";
+import { formatCurrency } from "../../utils";
 
 const DonutChart = ({ data = [] }: { data: Array<any> }) => {
   return (
@@ -6,6 +7,12 @@ const DonutChart = ({ data = [] }: { data: Array<any> }) => {
       options={{
         labels: data.map((item) => item._id) || [],
         dataLabels: {
+          formatter: (value: any, op) => {
+            console.log(value, op);
+            return op.w.config.series.map((item: any) => formatCurrency(item))[
+              op.seriesIndex
+            ];
+          },
           enabled: true,
           enabledOnSeries: undefined,
           textAnchor: "middle",

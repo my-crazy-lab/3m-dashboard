@@ -135,9 +135,12 @@ routerTransaction.get('/get-total-value-by-filter', async function (req, res) {
     }
 
     const db = await connectingLocal;
-    const transactionCollection = db.collection("transactions").aggregate(
+
+    const expenditure = db.collection("transactions").aggregate(
       [
-        $filter,
+        {
+          $match: { ...$filter.$match, type: "Expenditure" }
+        },
         {
           $group:
           {
@@ -146,10 +149,24 @@ routerTransaction.get('/get-total-value-by-filter', async function (req, res) {
           }
         },
       ]);
+    const dataExpenditure = await expenditure.toArray();
 
-    const data = await transactionCollection.toArray();
-    console.log(data)
-    res.status(200).send({ data });
+    const revenue = db.collection("transactions").aggregate(
+      [
+        {
+          $match: { ...$filter.$match, type: "Revenue" }
+        },
+        {
+          $group:
+          {
+            _id: "$label.type",
+            total: { $sum: "$label.value" },
+          }
+        },
+      ]);
+    const dataRevenue = await revenue.toArray();
+
+    res.status(200).send({ expenditure: dataExpenditure, revenue: dataRevenue });
   } catch (error) {
     res.status(500).send({ error })
   }
