@@ -136,7 +136,7 @@ const ExplainTransactionType = () => {
               span={3}
             >
               Tiền phụ không có nhóm: Gửi xe, chụp hình thẻ, mua bảo hiểm xe,
-              làm gplx, ...
+              làm gplx, tien quen note,...
             </Descriptions.Item>
             <Descriptions.Item label="" span={3}>
               <Divider />

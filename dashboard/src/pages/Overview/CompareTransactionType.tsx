@@ -1,4 +1,4 @@
-import { Card, Col, Descriptions, Row, Skeleton } from "antd";
+import { Card, Col, Descriptions, Divider, Row, Skeleton } from "antd";
 import DonutChart from "../../components/chart/DonutChart";
 import SelectTransactionType from "./SelectTransactionType";
 import RangePickerTransaction from "./RangePickerTransaction";
@@ -51,6 +51,18 @@ const CompareTransactionType = () => {
                         </Descriptions.Item>
                       ))
                     : null}
+                  <Descriptions.Item label="" span={3}>
+                    <Divider />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Sum" span={3}>
+                    {formatCurrency(
+                      data.expenditure.reduce(
+                        (accumulator, currentValue: any) =>
+                          accumulator + currentValue.total,
+                        0
+                      )
+                    )}
+                  </Descriptions.Item>
                 </Descriptions>
               )}
             </Col>
@@ -97,6 +109,18 @@ const CompareTransactionType = () => {
                         </Descriptions.Item>
                       ))
                     : null}
+                  <Descriptions.Item label="" span={3}>
+                    <Divider />
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Sum" span={3}>
+                    {formatCurrency(
+                      data.revenue.reduce(
+                        (accumulator, currentValue: any) =>
+                          accumulator + currentValue.total,
+                        0
+                      )
+                    )}
+                  </Descriptions.Item>
                 </Descriptions>
               )}
             </Col>
