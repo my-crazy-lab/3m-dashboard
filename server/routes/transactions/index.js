@@ -258,6 +258,31 @@ routerTransaction.post("/update", async (req, res) => {
   }
 });
 
+routerTransaction.post("/change-type", async (req, res) => {
+  try {
+    const { type, idTransaction } = req.body;
+
+    if (!type) {
+      res.status(404).send({ message: "Missing key type" });
+    }
+    if (!idTransaction) {
+      res.status(404).send({ message: "Missing key idTransaction" });
+    }
+
+    const db = await connectingLocal;
+
+    await db.collection("transactions").updateOne(
+      { "_id": ObjectId(idTransaction) },
+      { $set: { "type": type} });
+
+    res.status(200).json({ message: "change type successful" });
+  } catch (error) {
+    console.log(error);
+
+    res.status(500).json({ error })
+  }
+});
+
 routerTransaction.post("/remove", async (req, res) => {
   try {
     console.log(req.body)

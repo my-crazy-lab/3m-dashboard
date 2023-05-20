@@ -25,7 +25,6 @@ import { IN_OUT } from "../../constants";
 import SpaceWrap from "./SpaceWrap";
 import TransactionForm from "./TransactionForm";
 
-import moment from "moment";
 import type { ColumnsType } from "antd/es/table";
 import useDialog from "../../hooks/useDialog";
 import useCreateTransaction from "../../hooks/useCreateTransaction";
@@ -35,6 +34,7 @@ import { ProductionContext } from "../../components/layout/Main";
 import useRemoveTransaction from "../../hooks/useRemoveTransaction";
 import SelectTransactionType from "./SelectTransactionType";
 import RangePickerTransaction from "./RangePickerTransaction";
+import useChangeType from "../../hooks/useChangeType";
 
 const TableTransaction = () => {
   const { isLoading: isRemoving, onFetchData: onRemoveTransaction } =
@@ -55,6 +55,9 @@ const TableTransaction = () => {
   const { open, onClose, onOpen } = useDialog();
   const { isLoading: isCreatingTransaction, onFetchData: onCreateTransaction } =
     useCreateTransaction({ callbackDone: onClose });
+
+    const { isLoading: isChanging, onFetchData: onChangeType } =
+    useChangeType();
 
   const [form] = Form.useForm<any>();
 
@@ -123,6 +126,15 @@ const TableTransaction = () => {
             }}
           >
             {isRemoving ? <Spin /> : "Remove"}
+          </Button>
+          <Button
+            onClick={async () => {
+              await onChangeType({ idTransaction: args[1]._id, type:"Expenditure" });
+
+              onRefetch();
+            }}
+          >
+            {isChanging ? <Spin /> : "Changes into Expenditure"}
           </Button>
         </>
       ),
