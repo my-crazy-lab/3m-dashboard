@@ -4,7 +4,7 @@ import { Pressable, useColorScheme } from "react-native";
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
 
-import Colors from "../../constants/Colors";
+import Colors from "../../constants1/Colors";
 import { ScreenProps } from "expo-router/build/views/Screen";
 
 /**
