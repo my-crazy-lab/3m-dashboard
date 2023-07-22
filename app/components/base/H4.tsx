@@ -2,14 +2,12 @@ import React from "react";
 import { Text, TextProps } from "react-native";
 import { FONTS } from "../../constants";
 
-interface H4Props extends TextProps {
-  text: string;
-}
+interface H4Props extends TextProps {}
 
-const H4 = ({ text, style, ...props }: H4Props) => {
+const H4 = ({ children, style, ...props }: H4Props) => {
   return (
     <Text style={{ ...(style as object), ...FONTS.h4 }} {...props}>
-      {text}
+      {children}
     </Text>
   );
 };

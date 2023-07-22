@@ -2,13 +2,11 @@ import React from "react";
 import { Text, TextProps } from "react-native";
 import { FONTS } from "../../constants";
 
-interface Body2Props extends TextProps {
-  text: string;
-}
+interface Body2Props extends TextProps {}
 
-const Body2 = ({ text, style, ...props }: Body2Props) => (
+const Body2 = ({ children, style, ...props }: Body2Props) => (
   <Text style={{ ...(style as object), ...FONTS.body2 }} {...props}>
-    {text}
+    {children}
   </Text>
 );
 

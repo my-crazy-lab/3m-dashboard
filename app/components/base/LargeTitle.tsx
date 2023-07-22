@@ -2,13 +2,11 @@ import React from "react";
 import { Text, TextProps } from "react-native";
 import { FONTS } from "../../constants";
 
-interface LargeTitleProps extends TextProps {
-  text: string;
-}
+interface LargeTitleProps extends TextProps {}
 
-const LargeTitle = ({ text, style, ...props }: LargeTitleProps) => (
+const LargeTitle = ({ children, style, ...props }: LargeTitleProps) => (
   <Text style={{ ...(style as object), ...FONTS.largeTitle }} {...props}>
-    {text}
+    {children}
   </Text>
 );
 

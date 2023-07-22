@@ -3,6 +3,7 @@ import { Link, Tabs } from "expo-router";
 import { Pressable, useColorScheme } from "react-native";
 import { ApplicationProvider } from "@ui-kitten/components";
 import * as eva from "@eva-design/eva";
+import { useTranslation } from "react-i18next";
 
 import Colors from "../../constants1/Colors";
 import { ScreenProps } from "expo-router/build/views/Screen";
@@ -19,6 +20,7 @@ function TabBarIcon(props: {
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
+  const { t } = useTranslation();
 
   return (
     <ApplicationProvider {...eva} theme={eva.light}>
@@ -30,7 +32,7 @@ export default function TabLayout() {
         <Tabs.Screen
           name="index"
           options={{
-            title: "Tab One",
+            title: t("OVERVIEW"),
             tabBarIcon: ({ color }) => <TabBarIcon name="code" color={color} />,
             headerRight: () => (
               <Link href="/modal" asChild>
@@ -49,9 +51,9 @@ export default function TabLayout() {
           }}
         />
         <Tabs.Screen
-          name="two"
+          name="plaining"
           options={{
-            title: "Tab Two",
+            title: t("PLANING"),
             tabBarIcon: ({ color }) => <TabBarIcon name="plus" color={color} />,
           }}
         />
