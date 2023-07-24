@@ -6,11 +6,25 @@ import { COLORS } from "../../constants";
 import { useTranslation } from "react-i18next";
 import H3 from "../../components/base/H3";
 import { Link } from "expo-router";
-import { FlatList, Pressable } from "react-native";
+import {
+  ActivityIndicator,
+  ScrollView,
+  FlatList,
+  Pressable,
+} from "react-native";
 import Light3 from "../../components/base/Light3";
+import useGetTransactions from "../../hooks/useGetTransactions";
+import React from "react";
+import { Transactions } from "../../types/transactions";
 
 export default function TabOneScreen() {
   const { t } = useTranslation();
+
+  const { fetchData, data, error, isLoading } = useGetTransactions();
+
+  React.useEffect(() => {
+    fetchData();
+  }, []);
 
   const fakeDataWallet = [
     {
@@ -22,32 +36,6 @@ export default function TabOneScreen() {
       name: "Techcombank",
       amount: 1000000,
       _id: "ads",
-    },
-  ];
-  const fakeDataTransaction = [
-    {
-      name: "Market",
-      amount: 30000,
-      _id: "grt",
-      createdAt: new Date(),
-    },
-    {
-      name: "Sport",
-      amount: 200000,
-      _id: "xcv",
-      createdAt: new Date(),
-    },
-    {
-      name: "Sport",
-      amount: 200000,
-      _id: "xc22v",
-      createdAt: new Date(),
-    },
-    {
-      name: "Sport",
-      amount: 200000,
-      _id: "xcdv",
-      createdAt: new Date(),
     },
   ];
 
@@ -162,8 +150,8 @@ export default function TabOneScreen() {
           backgroundColor: "transparent",
         }}
       >
-        <FlatList
-          renderItem={({ item }: any) => (
+        <FlatList<Transactions>
+          renderItem={({ item }) => (
             <View
               style={{
                 justifyContent: "space-between",
@@ -180,19 +168,19 @@ export default function TabOneScreen() {
                   backgroundColor: "transparent",
                 }}
               >
-                <H3 style={{ color: COLORS.primary }}>{item.name}</H3>
+                <H3 style={{ color: COLORS.primary }}>{item.label.type}</H3>
                 <Light3 style={{ color: COLORS.darkgray }}>
-                  {item.amount.toLocaleString()}
+                  {item.label.value.toLocaleString()}
                 </Light3>
               </View>
               <View>
                 <Light3 style={{ color: COLORS.darkgray }}>
-                  {item.createdAt.toLocaleString()}
+                  {new Date(item.label.date).toLocaleString()}
                 </Light3>
               </View>
             </View>
           )}
-          data={fakeDataTransaction}
+          data={data}
           keyExtractor={(item: any) => item._id}
         />
       </View>
@@ -209,7 +197,7 @@ export default function TabOneScreen() {
     >
       <Header />
       <Wallet />
-      <Transaction />
+      {isLoading ? <ActivityIndicator /> : <Transaction />}
     </View>
   );
 }

@@ -4,5 +4,11 @@
   "MY_WALLET": "Ví của tôi",
   "MY_TRANSACTION": "Giao dịch",
   "OVERVIEW": "Tổng quan",
-  "PLANING": "Lập kế hoạch"
+  "PLANING": "Lập kế hoạch",
+  "ARE_YOU_SURE": "Bạn chắc chứ ?",
+  "CONFIRMATION": "Xác nhận",
+  "HAVE_ERROR": "Có lỗi xảy ra",
+  "SUCCESSFUL": "Thành công",
+  "YES": "Đồng ý",
+  "CANCEL": "Huỷ"
 }

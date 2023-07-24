@@ -4,11 +4,10 @@ import {
   Text,
   Pressable,
   View,
-  Alert,
-  ToastAndroid,
 } from "react-native";
 import { Formik } from "formik";
 import { Input, Select, SelectItem } from "@ui-kitten/components";
+import useCreateTransaction from "../hooks/useCreateTransaction";
 
 export interface ModalProps {
   isVisible: boolean;
@@ -16,6 +15,8 @@ export interface ModalProps {
 }
 
 const Modal = ({ isVisible, onClose }: ModalProps) => {
+  const { fetchData, data, error, isLoading } = useCreateTransaction();
+
   const onCreateTransaction = (values: {
     type: string;
     label: { value: string; type: string };
@@ -30,38 +31,11 @@ const Modal = ({ isVisible, onClose }: ModalProps) => {
       },
       userCode: Number(values.userCode),
     };
-    console.log(valuesFormatted);
+    console.log(valuesFormatted, process.env);
 
-    Alert.alert("Confirmation", "Are you sure ?", [
-      {
-        text: "Yes",
-        onPress: () =>
-          fetch(`${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/create`, {
-            method: "POST",
-            headers: {
-              Accept: "application/json",
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(valuesFormatted),
-          })
-            .then((response) => response.json())
-            .then((msg) => {
-              console.log(msg);
-
-              onClose();
-              ToastAndroid.show("Successful !", ToastAndroid.SHORT);
-            })
-            .catch((error: string) => {
-              ToastAndroid.show("Error !", ToastAndroid.SHORT);
-              console.log(error);
-            }),
-      },
-      {
-        text: "Cancel",
-        style: "cancel",
-      },
-    ]);
+    fetchData(valuesFormatted);
   };
+
   const labelsType = [
     {
       label: "Eat",
