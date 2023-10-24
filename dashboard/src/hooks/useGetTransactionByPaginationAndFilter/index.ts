@@ -33,7 +33,7 @@ const useGetTransactionByPaginationAndFilter = () => {
       setTotal(result.total);
     },
     method: "get",
-    api: `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-by-filter-and-pagination`,
+    api: `${process.env.REACT_APP_DOMAIN_API}/api/transaction/get-by-filter-and-pagination`,
   });
 
   useEffect(() => {

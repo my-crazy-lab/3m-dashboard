@@ -40,6 +40,7 @@ import LineChart from "../../components/chart/LineChart";
 import DonutChart from "../../components/chart/DonutChart";
 import BarChart from "../../components/chart/BarChart";
 
+import ButtonSubmitDataToCluster from "./ButtonSubmitDataToCluster";
 import ButtonReleaseMemory from "./ButtonReleaseMemory";
 import ButtonResetUser from "./ButtonResetUser";
 import ExplainTransactionType from "./ExplainTransactionType";
@@ -361,6 +362,7 @@ function Overview() {
           <SpaceWrap>
             <ButtonReleaseMemory setIsLoading={setIsLoading} />
             <ButtonResetUser />
+            <ButtonSubmitDataToCluster />
           </SpaceWrap>
         </Col>
         <Col span={16}>

@@ -7,7 +7,7 @@ const ButtonReleaseMemory = ({ setIsLoading }: any) => {
 
     return axios
       .delete(
-        `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/release-memory-free-cluster`
+        `${process.env.REACT_APP_DOMAIN_API}/api/transaction/release-memory-free-cluster`
       )
       .then((result) => {
         setIsLoading(false);

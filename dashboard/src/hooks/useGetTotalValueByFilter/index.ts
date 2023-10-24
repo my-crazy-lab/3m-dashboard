@@ -19,7 +19,7 @@ const useGetTotalValueByFilter = () => {
       setData(result?.data || { expenditure: [], revenue: [] });
     },
     method: "get",
-    api: `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/get-total-value-by-filter`,
+    api: `${process.env.REACT_APP_DOMAIN_API}/api/transaction/get-total-value-by-filter`,
   });
 
   useEffect(() => {

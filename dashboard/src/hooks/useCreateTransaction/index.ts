@@ -11,7 +11,7 @@ const useCreateTransaction = ({ callbackDone }: any) => {
       callbackDone?.();
     },
     method: "post",
-    api: `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/create`,
+    api: `${process.env.REACT_APP_DOMAIN_API}/api/transaction/create`,
   });
 
   return { isLoading, data, onFetchData };

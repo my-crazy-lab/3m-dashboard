@@ -185,6 +185,8 @@ const TableTransaction = () => {
                       isProduction,
                     });
 
+                    form.resetFields();
+
                     onRefetch();
                   }}
                 />

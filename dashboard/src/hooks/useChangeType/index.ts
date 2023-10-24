@@ -9,7 +9,7 @@ const useChangeType = () => {
       setData(data);
     },
     method: "post",
-    api: `${process.env.REACT_APP_DOMAIN_API}/3m/api/transaction/change-type`,
+    api: `${process.env.REACT_APP_DOMAIN_API}/api/transaction/change-type`,
   });
 
   return { isLoading, data, onFetchData };

@@ -15,8 +15,8 @@ const app = express();
 app.use(cors());
 app.use(express.json());
 
-app.use("/3m/api/transaction", routerTransaction);
-app.use("/3m/api/user", routerUser);
+app.use("/api/transaction", routerTransaction);
+app.use("/api/user", routerUser);
 
 app.use((err, _req, res, next) => {
   console.log(err)

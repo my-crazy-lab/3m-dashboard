@@ -10,13 +10,13 @@ if (!urlFreeMongoCluster) {
   throw new Error("❌ CLUSTER_URL not found. Please update .env")
 }
 
-// const connectingFreeCluster = MongoClient.connect(urlFreeMongoCluster, { useNewUrlParser: true }).then((client) => {
-//   console.log("✅ Connected mongodb cluster")
+const connectingFreeCluster = MongoClient.connect(urlFreeMongoCluster, { useNewUrlParser: true }).then((client) => {
+  console.log("✅ Connected mongodb cluster")
 
-//   return client.db('3m')
-// }).catch((err) => {
-//   throw new Error(err)
-// })
+  return client.db('3m')
+}).catch((err) => {
+  throw new Error(err)
+})
 
 const connectingLocal = MongoClient.connect(urlMongoLocal, { useNewUrlParser: true, useUnifiedTopology: true }).then((client) => {
   console.log("✅ Connected mongodb local (27017)")
@@ -27,4 +27,4 @@ const connectingLocal = MongoClient.connect(urlMongoLocal, { useNewUrlParser: tr
 })
 
 
-module.exports = { connectingFreeCluster: "", connectingLocal }
+module.exports = { connectingFreeCluster, connectingLocal }

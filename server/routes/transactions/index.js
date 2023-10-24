@@ -9,6 +9,21 @@ function defineMatchByIsProduction(isProduction) {
   return { $match: {} }
 }
 
+routerTransaction.post("/submit-data-from-local-to-cluster", async (req, res) => {
+  try {
+    const dbCluster = await connectingFreeCluster;
+    const dbLocal = await connectingLocal;
+
+    const localTransactions = await dbLocal.collection("transactions").find({}).toArray();
+    console.log(localTransactions)
+    await dbCluster.collection("transactions").insertMany(localTransactions)
+
+    res.status(200).send({ message: "Submit data from local to mongo cluster successful" })
+  } catch (error) {
+    res.status(500).send({ error })
+  }
+})
+
 routerTransaction.delete("/release-memory-free-cluster", async (req, res) => {
   try {
     const db = await connectingFreeCluster;
@@ -73,7 +88,7 @@ routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
       $filter.$match["label.description"] = { $regex: filter["search.description"] }
     }
 
-    const db = await connectingLocal;
+    const db = await connectingFreeCluster;
     const transactionCollection = db.collection("transactions").aggregate(
       [
         {
@@ -134,7 +149,7 @@ routerTransaction.get('/get-total-value-by-filter', async function (req, res) {
       }
     }
 
-    const db = await connectingLocal;
+    const db = await connectingFreeCluster;
 
     const expenditure = db.collection("transactions").aggregate(
       [
@@ -191,7 +206,7 @@ routerTransaction.post("/create", async function (req, res) {
       res.status(404).send({ message: "Missing key userCode" });
     }
 
-    const db = await connectingLocal;
+    const db = await connectingFreeCluster;
 
     const user = await db.collection("users").findOne({ userCode }, { _id: 1 })
 
@@ -235,7 +250,7 @@ routerTransaction.post("/update", async (req, res) => {
       res.status(404).send({ message: "Missing key userCode" });
     }
 
-    const db = await connectingLocal;
+    const db = await connectingFreeCluster;
 
     const user = await db.collection("users").findOne({ userCode }, { _id: 1 })
     if (!user) {
@@ -269,11 +284,11 @@ routerTransaction.post("/change-type", async (req, res) => {
       res.status(404).send({ message: "Missing key idTransaction" });
     }
 
-    const db = await connectingLocal;
+    const db = await connectingFreeCluster;
 
     await db.collection("transactions").updateOne(
       { "_id": ObjectId(idTransaction) },
-      { $set: { "type": type} });
+      { $set: { "type": type } });
 
     res.status(200).json({ message: "change type successful" });
   } catch (error) {
@@ -293,7 +308,7 @@ routerTransaction.post("/remove", async (req, res) => {
       res.status(404).send({ message: "Missing key idTransaction" });
     }
 
-    const db = await connectingLocal;
+    const db = await connectingFreeCluster;
 
     await db.collection("transactions").remove({ _id: ObjectId(idTransaction) });
 
