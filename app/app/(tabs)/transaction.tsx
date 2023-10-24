@@ -1,4 +1,5 @@
 import { StyleSheet } from "react-native";
+import { useTranslation } from "react-i18next";
 
 import EditScreenInfo from "../../components/EditScreenInfo";
 import { Button, Text, View } from "../../components/Themed";
@@ -11,9 +12,11 @@ export default function Tab3mScreen() {
   const onClose = () => setIsVisible(false);
   const onOpen = () => setIsVisible(true);
 
+  const { t } = useTranslation();
+
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Tab 3m</Text>
+      <Text style={styles.title}>{t("TRANSACTION")}</Text>
       <View
         style={styles.separator}
         lightColor="#eee"

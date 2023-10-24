@@ -47,12 +47,52 @@ function getParamsPagination(
   };
 }
 
+routerTransaction.get("/get-for-app", async (req, res) => {
+  // In the last 7 days
+  try {
+    console.log("🔥 transaction/get-for-app DEBUGGER ->>> ", req.query)
+
+    const { isProduction = false } = req.query
+
+    const $filter = defineMatchByIsProduction(isProduction)
+
+    const db = await connectingLocal;
+    const transactionCollection = db.collection("transactions").aggregate(
+      [
+        {
+          $project: {
+            createdAt: 1,
+            updatedAt: 1,
+            type: 1,
+            isProduction: 1,
+            label: {
+              value: 1,
+              type: 1,
+              date: 1,
+              description: 1
+            }
+          }
+        },
+        $filter,
+      ]);
+
+    const data = await transactionCollection.toArray();
+    console.log("My data", data)
+    res.status(200).send({
+      data
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ error })
+  }
+});
+
 routerTransaction.get("/get-by-filter-and-pagination", async (req, res) => {
   try {
     console.log("🔥 transactions/get-by-filter-and-pagination DEBUGGER ->>> ", req.query)
 
     const { pagination, filter = {} } = req.query
-    console.log(filter)
+    console.log("Filter: ", filter)
 
     if (!pagination.pageNumber || !pagination.pageSize) {
       res.status(404).send({ message: "Missing pageNumber or pageSize" })
@@ -218,7 +258,6 @@ routerTransaction.post("/create", async function (req, res) {
 
     const test = await db.collection("transactions").insertOne(
       { isProduction: formattedIsProduction, type, label: { ...label, date: new Date(label?.date) }, createdAt: new Date(), userId: user._id });
-    console.log(test, "!!!!!")
 
     res.status(200).json({ message: "Create new transaction successful" });
   } catch (error) {

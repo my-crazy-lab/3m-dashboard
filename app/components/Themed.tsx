@@ -10,7 +10,7 @@ import {
   Button as DefaultButton,
 } from "react-native";
 
-import Colors from "../constants/Colors";
+import Colors from "../constants1/Colors";
 
 export function useThemeColor(
   props: { light?: string; dark?: string },
