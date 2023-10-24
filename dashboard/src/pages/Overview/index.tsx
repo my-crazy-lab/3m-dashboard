@@ -352,19 +352,19 @@ function Overview() {
     },
   };
 
-  const [isLoading, setIsLoading] = useState<boolean>(false);
+  // const [isLoading, setIsLoading] = useState<boolean>(false);
 
   return (
     <>
       <Row gutter={[24, 12]}>
-        <Col span={8}>
+        {/* <Col span={8}>
           {isLoading ? <Skeleton /> : null}
           <SpaceWrap>
             <ButtonReleaseMemory setIsLoading={setIsLoading} />
             <ButtonResetUser />
             <ButtonSubmitDataToCluster />
           </SpaceWrap>
-        </Col>
+        </Col> */}
         <Col span={16}>
           <ExplainTransactionType />
         </Col>
