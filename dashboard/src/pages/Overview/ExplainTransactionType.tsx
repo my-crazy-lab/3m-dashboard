@@ -66,7 +66,7 @@ const ExplainTransactionType = () => {
               label={TRANSACTION_TYPE_EXPENDITURE.BCS}
               span={3}
             >
-              Ba con xói
+              Ba con xói, sữa tắm, dầu gội, ... (liên quan vệ sinh cá nhân)
             </Descriptions.Item>
             <Descriptions.Item label="" span={3}>
               <Divider />

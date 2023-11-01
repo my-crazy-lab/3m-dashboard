@@ -2,23 +2,30 @@
 import { useState } from "react";
 import axios from "../../axios";
 
-const useLoading = ({ callbackQuery, method, api }: any) => {
+const useLoading = ({ callbackQuery, method, api, callbackError }: any) => {
   const [isLoading, setIsLoading] = useState<boolean>(false);
 
-  async function onFetchData(...params: any) {
+  async function onFetchData({ params, data }: any) {
     console.log("in axios", method, api, params);
     setIsLoading(true);
 
-    await axios[method](api, ...params)
+    await axios(api, {
+      withCredentials: true,
+      method,
+      params,
+      data,
+    })
       .then((result) => {
-        setIsLoading(false);  
+        setIsLoading(false);
 
-        callbackQuery?.(result, ...params);
+        callbackQuery?.(result, { params, data });
 
         console.log(result);
       })
       .catch((error: any) => {
         setIsLoading(false);
+
+        callbackError?.(error, { params, data });
 
         console.log(error);
       });

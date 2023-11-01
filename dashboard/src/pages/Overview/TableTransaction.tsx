@@ -56,8 +56,7 @@ const TableTransaction = () => {
   const { isLoading: isCreatingTransaction, onFetchData: onCreateTransaction } =
     useCreateTransaction({ callbackDone: onClose });
 
-    const { isLoading: isChanging, onFetchData: onChangeType } =
-    useChangeType();
+  const { isLoading: isChanging, onFetchData: onChangeType } = useChangeType();
 
   const [form] = Form.useForm<any>();
 
@@ -120,7 +119,9 @@ const TableTransaction = () => {
         <>
           <Button
             onClick={async () => {
-              await onRemoveTransaction({ idTransaction: args[1]._id });
+              await onRemoveTransaction({
+                data: { idTransaction: args[1]._id },
+              });
 
               onRefetch();
             }}
@@ -129,7 +130,9 @@ const TableTransaction = () => {
           </Button>
           <Button
             onClick={async () => {
-              await onChangeType({ idTransaction: args[1]._id, type:"Expenditure" });
+              await onChangeType({
+                data: { idTransaction: args[1]._id, type: "Expenditure" },
+              });
 
               onRefetch();
             }}
@@ -179,10 +182,12 @@ const TableTransaction = () => {
                   form={form}
                   onFinish={async (e: any) => {
                     await onCreateTransaction({
-                      ...e,
-                      label: { ...e.label, date: e.label?.date?.toDate() },
-                      userCode: 3,
-                      isProduction,
+                      data: {
+                        ...e,
+                        label: { ...e.label, date: e.label?.date?.toDate() },
+                        userCode: 3,
+                        isProduction,
+                      },
                     });
 
                     form.resetFields();
@@ -208,7 +213,7 @@ const TableTransaction = () => {
         <RangePickerTransaction callbackChange={onFilter} />
         <InputNumber
           defaultValue={"5000000".replace(/\$\s?|(,*)/g, "")}
-          placeholder="Max value want to search"
+          placeholder="The maximum amount"
           style={{ width: 200 }}
           formatter={(value) =>
             `$ ${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
