@@ -31,8 +31,6 @@ import type { ColumnsType } from "antd/es/table";
 import useDialog from "../../hooks/useDialog";
 import useCreateTransaction from "../../hooks/useCreateTransaction";
 import { DeleteOutlined, SwapOutlined } from "@ant-design/icons";
-import { useContext } from "react";
-import { ProductionContext } from "../../components/layout/Main";
 import useRemoveTransaction from "../../hooks/useRemoveTransaction";
 import SelectTransactionType from "./SelectTransactionType";
 import RangePickerTransaction from "./RangePickerTransaction";
@@ -42,8 +40,6 @@ import { IN_OUT } from "../../constants";
 const TableTransaction = ({ reRenderOutside }: any) => {
   const { isLoading: isRemoving, onFetchData: onRemoveTransaction } =
     useRemoveTransaction();
-
-  const { isProduction } = useContext<any>(ProductionContext);
 
   const {
     isLoading,
@@ -104,10 +100,28 @@ const TableTransaction = ({ reRenderOutside }: any) => {
           <Button
             danger
             onClick={async () => {
-              await onRemoveTransaction({
-                data: { idTransaction: args[1]._id },
-              });
-              onRefetch();
+              if (args[1].type === IN_OUT.REVENUE) {
+                await onRemoveTransaction({
+                  data: {
+                    idTransaction: args[1]._id,
+                    jars: calculateRevenueForJARS(args[1].label.value),
+                  },
+                });
+              } else {
+                const jarsKey = getKeyJARSByCategory(args[1].label.type);
+                if (!jarsKey) {
+                  console.error("jarsKey invalid ????");
+                } else {
+                  await onRemoveTransaction({
+                    data: {
+                      idTransaction: args[1]._id,
+                      jars: { [jarsKey]: args[1].label.value },
+                    },
+                  });
+                }
+              }
+              await onRefetch();
+              await reRenderOutside?.({});
             }}
           >
             {isRemoving ? <Spin /> : <DeleteOutlined />}

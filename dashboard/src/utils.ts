@@ -27,11 +27,15 @@ export function getKeyJARSByCategory(category: string) {
   return null;
 }
 
-export function calculateRevenueForJARS(revenue: number) {
+export function calculateRevenueForJARS(revenue: number, isDecrease?: boolean) {
   const result: any = {};
 
   sixJARS.forEach((item) => {
-    result[item.key] = revenue * item.percent;
+    if (isDecrease) {
+      result[item.key] = -(revenue * item.percent);
+    } else {
+      result[item.key] = revenue * item.percent;
+    }
   });
 
   return result;

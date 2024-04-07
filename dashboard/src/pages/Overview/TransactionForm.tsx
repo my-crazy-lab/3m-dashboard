@@ -14,6 +14,7 @@ import {
   TransactionTypeExpenditureData,
   TransactionTypeRevenue,
 } from "../../constants";
+import moment from "moment";
 
 const TransactionForm = ({ form, onFinish }: any) => {
   return (
@@ -26,7 +27,7 @@ const TransactionForm = ({ form, onFinish }: any) => {
         label: {
           value: 0,
           type: "",
-          date: "",
+          date: moment(),
           description: "",
         },
       }}

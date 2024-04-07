@@ -391,7 +391,7 @@ function Overview() {
         </Col>
       </Row>
       <Divider />
-      <div className="layout-content">
+      {/* <div className="layout-content">
         <Row gutter={[24, 0]}>
           <Col xs={12} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
@@ -434,7 +434,7 @@ function Overview() {
             </Card>
           </Col>
         </Row>
-      </div>
+      </div> */}
     </>
   );
 }
