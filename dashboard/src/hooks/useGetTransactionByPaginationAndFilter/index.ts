@@ -1,7 +1,6 @@
 import { TablePaginationConfig } from "antd";
 import { useState, useEffect, useContext } from "react";
 import useLoading from "../useLoading";
-import { TRANSACTION_TYPE_EXPENDITURE } from "../../constants";
 import { ProductionContext } from "../../components/layout/Main";
 import moment from "moment";
 
@@ -18,10 +17,10 @@ const useGetTransactionByPaginationAndFilter = () => {
   const [filter, setFilter] = useState<{
     [key: string]: string | Array<any> | number;
   }>({
-    "label.type": [TRANSACTION_TYPE_EXPENDITURE.EAT],
+    "label.type": [],
     maxValue: 5000000,
     rangeDate: [
-      moment().startOf("date").toDate(),
+      moment().startOf("month").toDate(),
       moment().endOf("date").toDate(),
     ],
     isProduction: isProduction,
@@ -49,7 +48,6 @@ const useGetTransactionByPaginationAndFilter = () => {
   }, []);
 
   const onPagination = async (newPagination: any) => {
-    console.log(newPagination);
     setPagination(() => newPagination);
 
     await onFetchData({

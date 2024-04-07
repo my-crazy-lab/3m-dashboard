@@ -5,7 +5,7 @@ import RangePickerTransaction from "./RangePickerTransaction";
 import useGetTotalValueByFilter from "../../hooks/useGetTotalValueByFilter";
 import { formatCurrency } from "../../utils";
 import { useState } from "react";
-import { TRANSACTION_TYPE_EXPENDITURE } from "../../constants";
+import { IN_OUT, TRANSACTION_TYPE_EXPENDITURE } from "../../constants";
 
 const CompareTransactionType = () => {
   const { isLoading, data, onFilter } = useGetTotalValueByFilter();
@@ -27,6 +27,7 @@ const CompareTransactionType = () => {
               <Row gutter={[16, 16]}>
                 <Col span={24}>
                   <SelectTransactionType
+                    type={IN_OUT.EXPENDITURE}
                     callbackChange={(e: any) => setLabelsDonut(e["label.type"])}
                   />
                 </Col>
@@ -83,6 +84,7 @@ const CompareTransactionType = () => {
               <Row gutter={[16, 16]}>
                 <Col span={24}>
                   <SelectTransactionType
+                    type={IN_OUT.REVENUE}
                     callbackChange={(e: any) =>
                       setLabelsDonutRevenue(e["label.type"])
                     }

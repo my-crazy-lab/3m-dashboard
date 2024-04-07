@@ -16,6 +16,7 @@ const useLoading = ({ callbackQuery, method, api, callbackError }: any) => {
       data,
     })
       .then((result) => {
+        console.log(result, api)
         setIsLoading(false);
 
         callbackQuery?.(result, { params, data });

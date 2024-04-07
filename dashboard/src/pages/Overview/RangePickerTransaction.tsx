@@ -4,7 +4,7 @@ import moment from "moment";
 const RangePickerTransaction = ({ callbackChange }: any) => {
   return (
     <DatePicker.RangePicker
-      defaultValue={[moment().startOf("date"), moment().endOf("date")]}
+      defaultValue={[moment().startOf("month"), moment().endOf("date")]}
       onChange={(e: any) => {
         if (e && Array.isArray(e))
           callbackChange({

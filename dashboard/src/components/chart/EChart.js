@@ -44,11 +44,11 @@ function EChart() {
           options={eChart.options}
           series={eChart.series}
           type="bar"
-          height={220}
+          height={400}
         />
       </div>
       <div className="chart-vistior">
-        <Title level={5}>Active Users</Title>
+        <Title level={5}>Active Usersss</Title>
         <Paragraph className="lastweek">
           than last week <span className="bnb2">+30%</span>
         </Paragraph>
