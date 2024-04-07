@@ -1,8 +1,9 @@
-import { Card, Descriptions, Col, Row, Divider } from "antd";
+import { Card, Descriptions, Col, Row, Divider, Tag } from "antd";
 import {
   IN_OUT,
   TRANSACTION_TYPE_EXPENDITURE,
   TRANSACTION_TYPE_REVENUE,
+  sixJARS,
 } from "../../constants";
 
 const ExplainTransactionType = () => {
@@ -180,6 +181,15 @@ const ExplainTransactionType = () => {
             <Descriptions.Item label={TRANSACTION_TYPE_REVENUE.PAY} span={3}>
               Tiền bạn bè, gia đình trả nợ
             </Descriptions.Item>
+          </Descriptions>
+        </Card>
+        <Card style={{ marginTop: 12 }}>
+          <Descriptions title="6 JARS system">
+            {sixJARS.map((jars) => (
+              <Descriptions.Item label={jars.name} span={3}>
+                {jars.categories.join(", ")}
+              </Descriptions.Item>
+            ))}
           </Descriptions>
         </Card>
       </Col>

@@ -1,3 +1,5 @@
+import { sixJARS } from "./constants";
+
 export const formatDate = (input: Date | string | undefined): string => {
   if (!input) return "Invalid Date";
 
@@ -15,3 +17,22 @@ export const formatCurrency = (input: string | number) => {
     currency: "VND",
   });
 };
+
+export function getKeyJARSByCategory(category: string) {
+  for (const jar of sixJARS) {
+    if (jar.categories.includes(category)) {
+      return jar.key;
+    }
+  }
+  return null;
+}
+
+export function calculateRevenueForJARS(revenue: number) {
+  const result: any = {};
+
+  sixJARS.forEach((item) => {
+    result[item.key] = revenue * item.percent;
+  });
+
+  return result;
+}

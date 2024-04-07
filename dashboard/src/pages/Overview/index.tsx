@@ -1,16 +1,3 @@
-//@ts-nocheck
-
-/*!
-  =========================================================
-  * Muse Ant Design Dashboard - v1.0.0
-  =========================================================
-  * Product Page: https://www.creative-tim.com/product/muse-ant-design-dashboard
-  * Copyright 2021 Creative Tim (https://www.creative-tim.com)
-  * Licensed under MIT (https://github.com/creativetimofficial/muse-ant-design-dashboard/blob/main/LICENSE.md)
-  * Coded by Creative Tim
-  =========================================================
-  * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
 import { useState } from "react";
 import TableTransaction from "./TableTransaction";
 import { Divider } from "antd";
@@ -55,6 +42,8 @@ import team2 from "../../assets/images/team-2.jpg";
 import team3 from "../../assets/images/team-3.jpg";
 import team4 from "../../assets/images/team-4.jpg";
 import card from "../../assets/images/info-card-1.jpg";
+import useGetJARS from "../../hooks/useGetJARS";
+import { formatCurrency } from "../../utils";
 
 function Overview() {
   const { Title, Text } = Typography;
@@ -351,6 +340,7 @@ function Overview() {
   };
 
   // const [isLoading, setIsLoading] = useState<boolean>(false);
+  const { data: jars, onFetchData } = useGetJARS();
 
   return (
     <>
@@ -367,7 +357,31 @@ function Overview() {
           <ExplainTransactionType />
         </Col>
         <Col span={24}>
-          <TableTransaction />
+          <Row className="rowgap-vbox" gutter={[24, 0]}>
+            {jars.map((jar, index) => (
+              <Col key={index} xs={8} className="mb-24">
+                <Card bordered={false} className="criclebox ">
+                  <div className="number">
+                    <Row align="middle" gutter={[24, 0]}>
+                      <Col xs={18}>
+                        <span>{jar.name}</span>
+                        <Title level={3}>
+                          {formatCurrency(jar.value || 0)}{" "}
+                          <small className="bnb2">{jar.percent * 100}%</small>
+                        </Title>
+                      </Col>
+                      <Col xs={6}>
+                        <div className="icon-box">{dollor}</div>
+                      </Col>
+                    </Row>
+                  </div>
+                </Card>
+              </Col>
+            ))}
+          </Row>
+        </Col>
+        <Col span={24}>
+          <TableTransaction reRenderOutside={onFetchData} />
         </Col>
         <Col span={24}>
           <CompareTransactionType />
@@ -378,42 +392,7 @@ function Overview() {
       </Row>
       <Divider />
       <div className="layout-content">
-        <Row className="rowgap-vbox" gutter={[24, 0]}>
-          {count.map((c, index) => (
-            <Col
-              key={index}
-              xs={24}
-              sm={24}
-              md={12}
-              lg={6}
-              xl={6}
-              className="mb-24"
-            >
-              <Card bordered={false} className="criclebox ">
-                <div className="number">
-                  <Row align="middle" gutter={[24, 0]}>
-                    <Col xs={18}>
-                      <span>{c.today}</span>
-                      <Title level={3}>
-                        {c.title} <small className={c.bnb}>{c.persent}</small>
-                      </Title>
-                    </Col>
-                    <Col xs={6}>
-                      <div className="icon-box">{c.icon}</div>
-                    </Col>
-                  </Row>
-                </div>
-              </Card>
-            </Col>
-          ))}
-        </Row>
-
         <Row gutter={[24, 0]}>
-          <Col xs={12} className="mb-24">
-            <Card bordered={false} className="criclebox h-full">
-              <Echart />
-            </Card>
-          </Col>
           <Col xs={12} className="mb-24">
             <Card bordered={false} className="criclebox h-full">
               <LineChart />

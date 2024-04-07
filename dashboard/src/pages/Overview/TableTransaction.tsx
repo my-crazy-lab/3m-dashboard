@@ -17,8 +17,12 @@ import {
   Row,
 } from "antd";
 import useGetTransactionByPaginationAndFilter from "../../hooks/useGetTransactionByPaginationAndFilter";
-import { formatCurrency, formatDate } from "../../utils";
-import { IN_OUT } from "../../constants";
+import {
+  calculateRevenueForJARS,
+  formatCurrency,
+  formatDate,
+  getKeyJARSByCategory,
+} from "../../utils";
 
 import SpaceWrap from "./SpaceWrap";
 import TransactionForm from "./TransactionForm";
@@ -33,8 +37,9 @@ import useRemoveTransaction from "../../hooks/useRemoveTransaction";
 import SelectTransactionType from "./SelectTransactionType";
 import RangePickerTransaction from "./RangePickerTransaction";
 import useChangeType from "../../hooks/useChangeType";
+import { IN_OUT } from "../../constants";
 
-const TableTransaction = () => {
+const TableTransaction = ({ reRenderOutside }: any) => {
   const { isLoading: isRemoving, onFetchData: onRemoveTransaction } =
     useRemoveTransaction();
 
@@ -161,18 +166,39 @@ const TableTransaction = () => {
                 <TransactionForm
                   form={form}
                   onFinish={async (e: any) => {
-                    await onCreateTransaction({
-                      data: {
-                        ...e,
-                        label: { ...e.label, date: e.label?.date?.toDate() },
-                        userCode: 3,
-                        isProduction,
-                      },
-                    });
+                    if (e.type === IN_OUT.REVENUE) {
+                      await onCreateTransaction({
+                        data: {
+                          ...e,
+                          label: {
+                            ...e.label,
+                            date: e.label?.date?.toDate(),
+                          },
+                          jars: calculateRevenueForJARS(e.label.value),
+                        },
+                      });
+                    } else {
+                      const jarsKey = getKeyJARSByCategory(e.label.type);
+
+                      if (!jarsKey) {
+                        console.error("jarsKey invalid ????");
+                      } else {
+                        await onCreateTransaction({
+                          data: {
+                            ...e,
+                            label: {
+                              ...e.label,
+                              date: e.label?.date?.toDate(),
+                            },
+                            jars: { [jarsKey]: -e.label.value },
+                          },
+                        });
+                      }
+                    }
 
                     form.resetFields();
-
-                    onRefetch();
+                    await onRefetch();
+                    await reRenderOutside?.({});
                   }}
                 />
               )}
